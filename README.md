@@ -1,4 +1,33 @@
+# Automatisation de la Gestion des Inscriptions et Paiements chez JOSNET Ltd
 
+
+## 📌 Introduction
+**Contexte** : Transformation digitale des processus manuels d'inscription/paiement  
+**Entreprise** : JOSNET SERVICES Ltd (Services informatiques & formations)  
+**Problématique** :  
+- Gestion manuelle chronophage  
+- Risque d'erreurs humaines  
+- Manque de centralisation des données  
+
+**Technologies** : Django | Python | SQLite | Bootstrap  
+
+---
+
+## 🎯 Objectifs
+| Fonctionnel                     | Non-Fonctionnel              |
+|---------------------------------|------------------------------|
+| ✅ Automatisation des inscriptions | 🔒 Sécurité des données      |
+| 💳 Gestion des paiements         | 📱 Interface responsive      |
+| 📊 Reporting analytique          | ⚡ Performance optimisée     |
+
+---
+
+## 🛠 Architecture
+```mermaid
+graph TD
+    A[Client] --> B[Interface Web]
+    B --> C[Django Backend]
+    C --> D[(Base de Données)]
 
 **Application de Gestion Automatisée des Inscriptions et Paiements**  
 
