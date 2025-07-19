@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}Contact | JOSNET Ltd{% endblock %}
+{% load static %}
+{% block content %}
+<!-- Hero -->
+<section class="hero-section" style="background-image: linear-gradient(#185a76e6, rgba(12, 53, 68, 0.9)), url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Contactez-<span class="text-info">nous</span></h1>
+        <p class="lead">Une question ? Notre équipe vous répond sous 24h.</p>
+    </div>
+</section>
+
+<!-- Contact + Map -->
+<section class="py-5">
+    <div class="container">
+        <!-- Messages d'alerte -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- Formulaire -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h3 class="text-primary mb-4">Envoyez un message</h3>
+                        <form method="post" action="{% url 'contact' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nom complet</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input placeholder="...@gmail.com" type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Sujet</label>
+                                <select class="form-select" id="subject" name="subject" required>
+                                    <option value="" disabled selected>Sélectionnez un sujet</option>
+                                    <option value="formation">Demande d'information sur une formation</option>
+                                    <option value="partenariat">Partenariat entreprise</option>
+                                    <option value="autre">Autre demande</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <span id="submit-text">Envoyer</span>
+                                <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coordonnées + Map -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h3 class="text-primary mb-4">Nos coordonnées</h3>
+                        <div class="mb-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
+                                <div>
+                                    <h5 class="mb-1">Adresse</h5>
+                                    <p class="mb-0">Bujumbura, Burundi. Centre ville Avenue de l'amitié galerie K&G, 1er étage</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="fas fa-phone-alt text-primary me-3 mt-1"></i>
+                                <div>
+                                    <h5 class="mb-1">Téléphone</h5>
+                                    <p class="mb-0">+257 79 46 36 31</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="fas fa-envelope text-primary me-3 mt-1"></i>
+                                <div>
+                                    <h5 class="mb-1">Email</h5>
+                                    <p class="mb-0">infojosnetent@gmail.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Afficher les messages -->
+
+
+                        <!-- Google Maps -->
+                        <div class="ratio ratio-16x9">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d10600.223147629014!2d29.36691928163955!3d-3.3836998696502767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sfr!2sbi!4v1746703585180!5m2!1sfr!2sbi" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+
+                        <!-- Horaires -->
+                        <div class="mt-4">
+                            <h5 class="text-primary">Horaires d'ouverture</h5>
+                            <ul class="list-unstyled">
+                                <li class="d-flex justify-content-between">
+                                    <span>Lundi - Vendredi</span>
+                                    <span>8h - 18h</span>
+                                </li>
+                                <li class="d-flex justify-content-between">
+                                    <span>Samedi</span>
+                                    <span>9h - 13h</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Contact -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Josnet ! <span class="text-primary">votre preference</span></h2>
+        <div class="row g-4">
+            <!-- Vos questions/réponses existantes... -->
+        </div>
+    </div>
+</section>
+
+<!-- Script pour désactiver le bouton après soumission -->
+<script>
+document.querySelector('form').addEventListener('submit', function() {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    document.getElementById('submit-text').textContent = 'Envoi en cours...';
+});
+</script>
+{% endblock %}

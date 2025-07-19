@@ -1,0 +1,130 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary-custom text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-edit me-2"></i>Modifier l'encadreur
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">Informations Personnelles</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" 
+                                           name="first_name" value="{{ formateur.user.first_name }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom</label>
+                                    <input type="text" class="form-control" 
+                                           name="last_name" value="{{ formateur.user.last_name }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" 
+                                           name="email" value="{{ formateur.user.email }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Téléphone</label>
+                                    <input type="tel" class="form-control" 
+                                           name="telephone" value="{{ formateur.telephone }}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Adresse</label>
+                                    <textarea class="form-control" name="adress" rows="2">{{ formateur.adress }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'liste_comptes_approuves_form' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styles spécifiques pour ce template */
+    .card {
+        border-radius: 10px;
+        border: none;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .bg-primary-custom {
+        background-color: #185a76;
+    }
+    
+    .btn-primary-custom {
+        background-color: #185a76;
+        border: none;
+        color: white;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary-custom:hover {
+        background-color: #134b63;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(24, 90, 118, 0.2);
+    }
+    
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .form-control:focus {
+        border-color: #185a76;
+        box-shadow: 0 0 0 0.25rem rgba(24, 90, 118, 0.25);
+    }
+    
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+    
+    .border-bottom {
+        border-color: #f0f0f0 !important;
+    }
+    
+    h5 {
+        color: #185a76;
+        font-weight: 600;
+    }
+    
+    label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+</style>
+{% endblock %}

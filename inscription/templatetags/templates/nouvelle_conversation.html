@@ -1,0 +1,81 @@
+{% extends 'index.html' %}
+
+{% block title %}Nouveau message - Inscription{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-envelope"></i> Nouveau message</h2>
+    
+    <form method="post" class="mt-4" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group mb-3">
+            {{ form.sujet.label_tag }}
+            {{ form.sujet }}
+        </div>
+        
+        <div class="form-group mb-3">
+            <label class="form-label">Destinataires (approuvés seulement)</label>
+            <div class="row">
+                {% for user in form.destinataires.field.queryset %}
+                <div class="col-md-6 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" 
+                               name="destinataires" 
+                               value="{{ user.id }}" 
+                               id="dest_{{ user.id }}">
+                        <label class="form-check-label" for="dest_{{ user.id }}">
+                            {{ user.get_full_name|default:user.username }}
+                            <span class="badge bg-secondary">
+                                {% if user.is_staff %}Admin
+                                {% elif user.formateur.statut %}Formateur
+                                {% elif user.apprenant.statut %}Apprenant
+                                {% else %}Utilisateur{% endif %}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning">Aucun destinataire disponible</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Le reste de votre formulaire reste inchangé -->
+        <div class="form-group mb-3">
+            <label for="id_contenu" class="form-label">Message</label>
+            {{ form.contenu }}
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_fichier" class="form-label">
+                        <i class="fas fa-paperclip"></i> Joindre un fichier
+                    </label>
+                    {{ form.fichier }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="id_image" class="form-label">
+                        <i class="fas fa-image"></i> Joindre une image
+                    </label>
+                    {{ form.image }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'messagerie:boite_reception' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> Envoyer
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

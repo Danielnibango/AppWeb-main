@@ -1,0 +1,482 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br><br><br><br><br><br>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Sélection du cours -->
+            <div class="form-group">
+                <label for="cours-select">Cours</label>
+                <select class="form-control" id="cours-select">
+                    <option value="">-- Sélectionnez un cours --</option>
+                    {% for cours in cours_list %}
+                    <option value="{{ cours.id }}"
+                            data-cours="{{ cours.titre }}"
+                            data-module="{{ cours.module.nom }}"
+                            data-formateur="{% firstof cours.formateur.user.get_full_name cours.formateur.user.username 'Non attribué' %}"
+                            data-prix="{{ cours.price }}">
+                        {{ cours.titre }} - {{ cours.module.nom }} ({{ cours.price }} FBU)
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="margin-top: 15px;">
+                <p><strong>Cours :</strong> <span id="cours_info">--</span></p>
+                <p><strong>Module :</strong> <span id="module_info">--</span></p>
+                <p><strong>Encadreur :</strong> <span id="formateur_info">--</span></p>
+                <p><strong>Prix :</strong> <span id="prix_info">--</span></p>
+            </div>
+
+            <!-- Sélection du mode de paiement (masqué initialement) -->
+            <div class="card mb-4" id="payment-method-selection" style="display: none;">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Choisissez votre mode de paiement</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <button onclick="selectPaymentMethod('paypal')" class="btn btn-outline-primary w-100 py-3 payment-method-btn">
+                                <i class="fab fa-paypal fa-2x mb-2"></i><br>
+                                <strong>PayPal</strong>
+                                <p class="small mt-2 mb-0">Carte bancaire acceptée</p>
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button onclick="selectPaymentMethod('cinetpay')" class="btn btn-outline-success w-100 py-3 payment-method-btn">
+                                <img src="{% static 'images/cinet.jpg' %}" alt="CinetPay" style="height: 24px; margin-bottom: 8px;"><br>
+                                <strong>CinetPay</strong>
+                                <p class="small mt-2 mb-0">Paiement mobile</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire principal (masqué initialement) -->
+            <div class="card" id="main-form" style="display: none;">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Finalisez votre inscription</h4>
+                </div>
+                <div class="card-body">
+                    <form id="payment-form">
+                        {% csrf_token %}
+                        <input type="hidden" id="selected-cours-id">
+                        
+                        <!-- Section Module/Formateur/Cours -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Module</label>
+                                    <input type="text" class="form-control" id="module-field" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Encadreur</label>
+                                    <input type="text" class="form-control" id="formateur-field" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Prix</label>
+                                    <input type="text" class="form-control" id="prix-field" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section PayPal (masquée par défaut) -->
+                        <div id="paypal-fields" style="display: none;">
+                            <h5 class="border-bottom pb-2 mb-3">Informations de paiement</h5>
+                            <div id="paypal-button-container"></div>
+                            <small class="text-muted">Vous serez redirigé vers PayPal pour finaliser le paiement</small>
+                        </div>
+
+                        <!-- Section Mobile Money (masquée par défaut) -->
+                        <div id="cinetpay-fields" style="display: none;">
+                            <h5 class="border-bottom pb-2 mb-3">Paiement Mobile</h5>
+                            <div class="alert alert-info">
+                                <i class="fas fa-mobile-alt me-2"></i>Un SMS de confirmation sera envoyé à votre numéro
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="mobile_operator">Opérateur</label>
+                                        <select class="form-control" id="mobile_operator" required>
+                                            <option value="">-- Choisissez --</option>
+                                            <option value="lumitel">Lumitel</option>
+                                            <option value="econet">Econet</option>
+                                            <option value="orange">Orange Money</option>
+                                            <option value="mtn">MTN Mobile Money</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="mobile_number">Numéro mobile</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            <input type="tel" class="form-control" id="mobile_number" 
+                                                   placeholder="77 123 45 67" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informations personnelles -->
+                        <h5 class="border-bottom pb-2 mb-3 mt-4">Vos informations</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="prenom">Prénom</label>
+                                    <input type="text" class="form-control" id="prenom" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nom">Nom</label>
+                                    <input type="text" class="form-control" id="nom" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">E-mail</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="telephone">Téléphone</label>
+                                    <input type="tel" class="form-control" id="telephone" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="adresse">Adresse</label>
+                            <input type="text" class="form-control" id="adresse" required>
+                        </div>
+
+                        <!-- Checkbox et message -->
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="conditions" required>
+                            <label class="form-check-label" for="conditions">
+                                J'accepte les conditions générales et la politique de confidentialité
+                            </label>
+                        </div>
+
+                        <!-- Bouton de paiement -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="button" class="btn btn-primary btn-lg" id="pay-button">
+                                <i class="fas fa-lock me-2"></i>Finaliser le paiement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Intégration PayPal -->
+<script src="https://www.paypal.com/sdk/js?client-id={{ PAYPAL_CLIENT_ID }}&currency=USD&intent=capture"></script>
+
+<script>
+// Variables globales
+let selectedCoursId = null;
+let currentPrice = 0;
+
+// Gestion de la sélection du cours
+document.getElementById('cours-select').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    
+    // Récupération des données
+    const cours = selectedOption.dataset.cours || '--';
+    const module = selectedOption.dataset.module || '--';
+    const formateur = selectedOption.dataset.formateur || '--';
+    const prix = selectedOption.dataset.prix || '--';
+    currentPrice = parseInt(prix) || 0;
+
+    // Mise à jour des affichages
+    document.getElementById('cours_info').textContent = cours;
+    document.getElementById('module_info').textContent = module;
+    document.getElementById('formateur_info').textContent = formateur;
+    document.getElementById('prix_info').textContent = prix + ' FBU';
+
+    // Mise à jour des champs du formulaire
+    document.getElementById('module-field').value = module;
+    document.getElementById('formateur-field').value = formateur;
+    document.getElementById('prix-field').value = prix + ' FBU';
+    document.getElementById('selected-cours-id').value = this.value;
+    selectedCoursId = this.value;
+
+    // Affiche la sélection de méthode de paiement si un cours est sélectionné
+    if (this.value) {
+        document.getElementById('payment-method-selection').style.display = 'block';
+        document.getElementById('main-form').style.display = 'none';
+    } else {
+        document.getElementById('payment-method-selection').style.display = 'none';
+        document.getElementById('main-form').style.display = 'none';
+    }
+});
+
+// Sélection de la méthode de paiement
+function selectPaymentMethod(method) {
+    if (!selectedCoursId) {
+        alert("Veuillez d'abord sélectionner un cours");
+        return;
+    }
+
+    document.getElementById('main-form').style.display = 'block';
+    document.getElementById('payment-method-selection').style.display = 'none';
+    
+    // Configure les champs selon la méthode choisie
+    if (method === 'paypal') {
+        document.getElementById('paypal-fields').style.display = 'block';
+        document.getElementById('cinetpay-fields').style.display = 'none';
+        document.getElementById('pay-button').style.display = 'none';
+        initPayPal();
+    } else {
+        document.getElementById('paypal-fields').style.display = 'none';
+        document.getElementById('cinetpay-fields').style.display = 'block';
+        document.getElementById('pay-button').style.display = 'block';
+        document.getElementById('pay-button').onclick = processMobilePayment;
+        document.getElementById('pay-button').textContent = 'Payer avec Mobile Money';
+    }
+}
+
+// Initialisation PayPal
+function initPayPal() {
+    paypal.Buttons({
+        style: {
+            layout: 'vertical',
+            color: 'blue',
+            shape: 'rect',
+            label: 'paypal'
+        },
+        createOrder: function(data, actions) {
+            // Conversion FBU en USD (taux approximatif)
+            const amountUSD = (currentPrice / 2000).toFixed(2);
+            
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: amountUSD,
+                        currency_code: 'USD',
+                        breakdown: {
+                            item_total: {
+                                value: amountUSD,
+                                currency_code: 'USD'
+                            }
+                        }
+                    },
+                    items: [{
+                        name: document.getElementById('cours_info').textContent,
+                        description: 'Paiement formation',
+                        quantity: '1',
+                        unit_amount: {
+                            value: amountUSD,
+                            currency_code: 'USD'
+                        }
+                    }]
+                }]
+            });
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                submitPaymentDetails({
+                    method: 'paypal',
+                    transaction_id: details.id,
+                    amount: currentPrice,
+                    currency: 'FBU',
+                    status: 'completed'
+                });
+            });
+        },
+        onError: function(err) {
+            console.error('Erreur PayPal:', err);
+            showError("Une erreur s'est produite lors du paiement PayPal");
+        }
+    }).render('#paypal-button-container');
+}
+
+// Traitement du paiement mobile
+async function processMobilePayment() {
+    // Validation du formulaire
+    if (!validateForm()) return;
+
+    const operator = document.getElementById('mobile_operator').value;
+    const phone = document.getElementById('mobile_number').value;
+    
+    // Validation du numéro
+    const validation = validateMobileNumber(phone, operator);
+    if (!validation.valid) {
+        showError(validation.message);
+        return;
+    }
+
+    // Confirmation
+    if (!confirm(`Confirmez-vous le paiement de ${currentPrice} FBU via ${operator} (${validation.formattedNumber}) ?`)) {
+        return;
+    }
+
+    // Données à envoyer
+    const paymentData = {
+        cours_id: selectedCoursId,
+        method: 'mobile',
+        provider: operator,
+        phone: validation.fullNumber,
+        amount: currentPrice,
+        currency: 'FBU',
+        prenom: document.getElementById('prenom').value,
+        nom: document.getElementById('nom').value,
+        email: document.getElementById('email').value,
+        telephone: document.getElementById('telephone').value,
+        adresse: document.getElementById('adresse').value
+    };
+
+    try {
+        // Envoi au serveur
+        const response = await fetch('/process-payment/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(paymentData)
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            window.location.href = '/payment/success/' + result.transaction_id + '/';
+        } else {
+            showError(result.message || "Erreur lors du paiement");
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        showError("Erreur de connexion au serveur");
+    }
+}
+
+// Validation du formulaire
+function validateForm() {
+    const requiredFields = ['prenom', 'nom', 'email', 'telephone', 'adresse', 'mobile_number'];
+    for (const fieldId of requiredFields) {
+        const field = document.getElementById(fieldId);
+        if (field && !field.value.trim()) {
+            showError(`Le champ "${field.labels ? field.labels[0].textContent : fieldId}" est obligatoire`);
+            field.focus();
+            return false;
+        }
+    }
+
+    if (!document.getElementById('conditions').checked) {
+        showError("Vous devez accepter les conditions générales");
+        return false;
+    }
+
+    return true;
+}
+
+// Validation du numéro mobile
+function validateMobileNumber(phone, operator) {
+    const cleaned = phone.replace(/\D/g, '');
+    
+    // Validation basique pour le Burundi
+    if (cleaned.length < 8) {
+        return { valid: false, message: "Numéro trop court. Format attendu: 77 123 456" };
+    }
+
+    // Formatage pour l'affichage
+    const formattedNumber = cleaned.replace(/(\d{2})(\d{3})(\d{3})/, '$1 $2 $3');
+    
+    // Format complet avec indicatif
+    const fullNumber = '257' + cleaned; // Indicatif du Burundi
+
+    return {
+        valid: true,
+        formattedNumber: formattedNumber,
+        fullNumber: fullNumber
+    };
+}
+
+// Soumission des données de paiement
+async function submitPaymentDetails(paymentData) {
+    // Ajoute les données personnelles
+    paymentData.prenom = document.getElementById('prenom').value;
+    paymentData.nom = document.getElementById('nom').value;
+    paymentData.email = document.getElementById('email').value;
+    paymentData.telephone = document.getElementById('telephone').value;
+    paymentData.adresse = document.getElementById('adresse').value;
+
+    try {
+        const response = await fetch('/process-payment/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(paymentData)
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            window.location.href = '/payment/success/' + result.transaction_id + '/';
+        } else {
+            showError(result.message || "Erreur lors du traitement du paiement");
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        showError("Erreur de connexion au serveur");
+    }
+}
+
+// Affichage des messages d'erreur
+function showError(message) {
+    // Supprime les anciennes erreurs
+    const oldAlerts = document.querySelectorAll('.alert-dynamic');
+    oldAlerts.forEach(alert => alert.remove());
+
+    // Crée une nouvelle alerte
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-danger alert-dynamic';
+    alertDiv.innerHTML = `
+        <button type="button" class="close" onclick="this.parentElement.remove()">&times;</button>
+        ${message}
+    `;
+    
+    // Insère l'alerte en haut du formulaire
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+}
+</script>
+
+<style>
+.payment-method-btn {
+    transition: all 0.3s;
+    border: 2px solid #dee2e6;
+}
+.payment-method-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+#paypal-button-container {
+    margin: 20px 0;
+}
+.alert-dynamic {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    min-width: 300px;
+    text-align: center;
+}
+</style>
+{% endblock %}

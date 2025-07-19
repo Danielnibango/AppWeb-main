@@ -1,0 +1,457 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block page_title %}Page de la gestion de paiement{% endblock %}
+{% block content %}
+<div class="table-container">
+    <!-- En-tête avec bouton d'ajout -->
+    <div class="table-header text-center">
+        <div class="header-content">
+            <h3 class="table-title">
+                <i class="fas fa-money-bill-wave me-2"></i>Gestion des Paiements
+            </h3>
+            <p class="table-subtitle text-muted mb-3">Liste complète des transactions</p>
+        </div>
+    </div>
+
+    <!-- Barre de contrôle -->
+    <div class="table-controls mb-4">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Rechercher un paiement..." data-search-table>
+        </div>
+        <div class="d-flex gap-2">
+            <!-- Filtre par statut -->
+            <select class="form-select form-select-sm" id="statusFilter" style="width: 180px;">
+                <option value="">Tous les statuts</option>
+                <option value="en_attente">En attente</option>
+                <option value="effectue">Effectué</option>
+                <option value="echoue">Échoué</option>
+            </select>
+            
+           
+        </div>
+    </div>
+
+    <!-- Tableau principal -->
+    <div class="table-responsive">
+        <table class="professional-table">
+            <thead>
+                <tr>
+                    <th width="100">ID</th>
+                    <th>Stagiaire</th>
+                    <th>Cours</th>
+                    <th>Encadreur</th>
+                    <th>Mode</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                    <th>Référence</th>
+                    <th>Statut</th>
+                    <th width="120">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paiement in paiements %}
+                <tr data-status="{{ paiement.statut }}">
+                    <td>PAY-{{ paiement.id|stringformat:"04d" }}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm me-2">
+                                <span class="avatar-text bg-primary-light text-primary">
+                                    {{ paiement.apprenant.username|first|upper }}
+                                </span>
+                            </div>
+                            {{ paiement.apprenant.username }}
+                        </div>
+                    </td>
+                    <td>{{ paiement.cours.titre|truncatechars:30 }}</td>
+                    <td>
+                        {% if paiement.formateur %}
+                        {{ paiement.formateur.user.username }}
+                        {% else %}
+                        <span class="text-muted">Non assigné</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if paiement.mode_paiement == 'mobile_money' %}
+                        <span class="badge bg-info text-white">
+                            <i class="fas fa-mobile-alt me-1"></i> Mobile Money
+                        </span>
+                        {% else %}
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-credit-card me-1"></i> Carte Bancaire
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>{{ paiement.prix }} Fbu</td>
+                    <td>{{ paiement.date_paiement|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if paiement.reference_paiement %}
+                        <code>{{ paiement.reference_paiement|truncatechars:10 }}</code>
+                        {% else %}
+                        <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if paiement.statut == 'effectue' %}
+                        <span class="badge bg-success rounded-pill">
+                            <i class="fas fa-check-circle me-1"></i> Effectué
+                        </span>
+                        {% elif paiement.statut == 'en_attente' %}
+                        <span class="badge bg-warning rounded-pill text-dark">
+                            <i class="fas fa-clock me-1"></i> En attente
+                        </span>
+                        {% else %}
+                        <span class="badge bg-danger rounded-pill">
+                            <i class="fas fa-times-circle me-1"></i> Échoué
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <!-- Bouton Voir détails -->
+                            <a href="#" 
+                               class="btn btn-action btn-sm btn-view"
+                               data-bs-toggle="modal" 
+                               data-bs-target="#detailsModal{{ paiement.id }}"
+                               title="Détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            
+                            <!-- Bouton Valider -->
+                            {% if paiement.statut == 'en_attente' %}
+                            <form method="POST" action="{% url 'valider_paiement' paiement.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="btn btn-action btn-sm btn-success"
+                                        title="Valider"
+                                        onclick="return confirm('Confirmer la validation de ce paiement ?');">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Modal Détails -->
+                        <div class="modal fade" id="detailsModal{{ paiement.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Détails du paiement #PAY-{{ paiement.id|stringformat:"04d" }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6>Informations de base</h6>
+                                                <ul class="list-group list-group-flush mb-3">
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Apprenant:</span>
+                                                        <strong>{{ paiement.apprenant.username }}</strong>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Cours:</span>
+                                                        <strong>{{ paiement.cours.titre }}</strong>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Montant:</span>
+                                                        <strong>{{ paiement.prix }} Fbu</strong>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Date:</span>
+                                                        <strong>{{ paiement.date_paiement|date:"d/m/Y H:i" }}</strong>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Détails du paiement</h6>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Mode:</span>
+                                                        <strong>
+                                                            {% if paiement.mode_paiement == 'mobile_money' %}
+                                                            Mobile Money ({{ paiement.operateur }})
+                                                            {% else %}
+                                                            Carte Bancaire
+                                                            {% endif %}
+                                                        </strong>
+                                                    </li>
+                                                    {% if paiement.mode_paiement == 'mobile_money' %}
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Numéro:</span>
+                                                        <strong>{{ paiement.numero_mobile }}</strong>
+                                                    </li>
+                                                    {% else %}
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Carte:</span>
+                                                        <strong>**** **** **** {{ paiement.numero_carte|slice:"-4:" }}</strong>
+                                                    </li>
+                                                    {% endif %}
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Référence:</span>
+                                                        <strong>{{ paiement.reference_paiement|default:"N/A" }}</strong>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between">
+                                                        <span>Statut:</span>
+                                                        <strong>
+                                                            {% if paiement.statut == 'effectue' %}
+                                                            <span class="text-success">Effectué</span>
+                                                            {% elif paiement.statut == 'en_attente' %}
+                                                            <span class="text-warning">En attente</span>
+                                                            {% else %}
+                                                            <span class="text-danger">Échoué</span>
+                                                            {% endif %}
+                                                        </strong>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        {% if paiement.statut == 'en_attente' %}
+                                        <form method="POST" action="{% url 'valider_paiement' paiement.pk %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary">
+                                                Valider le paiement
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">
+                        <div class="empty-state">
+                            <img src="{% static 'images/empty.svg' %}" alt="Aucune donnée" width="150">
+                            <h5>Aucun paiement enregistré</h5>
+                            <p class="text-muted">Aucune transaction n'a été effectuée pour le moment</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="Premier">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Dernier">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    .table-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .header-content {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .table-title {
+        color: #185a76;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    /* Styles spécifiques pour ce template */
+    .avatar-sm {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+    
+    .avatar-text {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    
+    .empty-state img {
+        opacity: 0.7;
+        margin-bottom: 1rem;
+    }
+    
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+    
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .search-box input {
+        padding-left: 40px;
+    }
+    
+    .table-subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .bg-primary-light {
+        background-color: rgba(24, 90, 118, 0.1);
+    }
+    
+    .btn-primary-custom {
+        background-color: #185a76;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary-custom:hover {
+        background-color: #134b63;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(24, 90, 118, 0.2);
+    }
+    
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 6px;
+    }
+    
+    .btn-edit {
+        background-color: #185a76;
+        color: white;
+    }
+    
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-view {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .professional-table td {
+        vertical-align: middle;
+    }
+
+    /* Styles pour les badges de statut */
+    .badge.bg-success {
+        background-color: #28a745 !important;
+    }
+    
+    .badge.bg-warning {
+        background-color: #ffc107 !important;
+    }
+    
+    .badge.bg-danger {
+        background-color: #dc3545 !important;
+    }
+    
+    .badge.bg-info {
+        background-color: #17a2b8 !important;
+    }
+    
+    .badge.bg-secondary {
+        background-color: #6c757d !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialisation des tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Fonctionnalité de recherche
+        const searchInput = document.querySelector('[data-search-table]');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const value = this.value.toLowerCase();
+                document.querySelectorAll('.professional-table tbody tr').forEach(function(row) {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(value) ? '' : 'none';
+                });
+            });
+        }
+        
+        // Filtrage par statut
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function() {
+                const value = this.value;
+                document.querySelectorAll('.professional-table tbody tr').forEach(function(row) {
+                    if (value === "") {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = row.dataset.status === value ? '' : 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+{% endblock %}

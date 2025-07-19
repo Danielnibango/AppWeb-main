@@ -1,0 +1,118 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Carte contenant le formulaire -->
+            <div class="card shadow-sm border-0">
+                <!-- En-tête de la carte -->
+                <div class="card-header bg text-white rounded-top"  style="background-color: #185a76;">
+                    <h4 class="mb-0"  >
+                        <i class="fas fa-cube me-2" ></i>Modifier le Module
+                    </h4>
+                </div>
+
+                <!-- Corps de la carte -->
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Champ Nom -->
+                        <div class="mb-4" >
+                            <label for="id_nom" class="form-label fw-bold">Nom du Module</label>
+                            <input type="text" class="form-control" 
+                                   name="nom" id="id_nom" value="{{ form.nom.value|default_if_none:'' }}"
+                                   required>
+                        </div>
+
+                        <!-- Champ Description -->
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label fw-bold">Description</label>
+                            <textarea class="form-control" 
+                                      name="description" id="id_description" rows="4">{{ form.description.value|default_if_none:'' }}</textarea>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                            <a href="{% url 'liste_module' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom" style="color: aliceblue;">
+                                <i class="fas fa-save me-1"></i> Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #185a76;
+        --primary-hover: #134b63;
+    }
+    
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background-color: var(--primary-color);
+        padding: 1rem 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+        padding: 0.75rem 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(24, 90, 118, 0.25);
+    }
+    
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        border: none;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 6px;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary-custom:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+    
+    .btn-outline-secondary {
+        border-radius: 6px;
+    }
+</style>
+
+<script>
+    // Script basique de validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const nomField = document.getElementById('id_nom');
+        if (!nomField.value.trim()) {
+            e.preventDefault();
+            nomField.classList.add('is-invalid');
+            alert('Le nom du module est requis');
+        }
+    });
+</script>
+{% endblock %}

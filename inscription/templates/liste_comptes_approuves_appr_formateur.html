@@ -1,0 +1,276 @@
+{% extends 'index_formateur.html' %}
+{% load static %}
+{% block page_title %}Page des apprenants approuves{% endblock %}
+{% block content %}
+<div class="table-container" >
+    <!-- En-tête avec bouton d'ajout - Version centrée -->
+    <div class="table-header text-center mb-5">
+        <div class="d-flex flex-column align-items-center">
+            <h3 class="table-title mb-3">
+                <i class="fas fa-user-graduate me-2"></i>Stagiaires Approuvés
+            </h3>
+            <p class="table-subtitle text-muted mb-4">Liste complète des stagiaires validés par l'administrateur</p>
+            <a href="{% url 'creation_compte' %}" class="btn btn-primary btn-lg" style="background-color: #185a76; border: none; min-width: 200px;">
+                <i class="fas fa-plus-circle me-2"></i>Nouveau stagiaire
+            </a>
+        </div>
+    </div>
+
+    <!-- Barre de contrôle -->
+    <div class="table-controls mb-4 d-flex justify-content-between align-items-center">
+        <div class="search-box position-relative">
+            <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+            <input type="text" class="form-control ps-5" placeholder="Rechercher un apprenant..." data-search-table>
+        </div>
+        <div class="d-flex gap-2">
+            <select class="form-select filter-select" id="statusFilter" style="width: 180px;">
+                <option value="">Tous les statuts</option>
+                <option value="active">Actifs</option>
+            </select>
+            <a href="{% url 'exporter_apprenants_csv' %}" class="btn btn-outline-secondary" id="exportBtn">
+                <i class="fas fa-file-export me-2"></i>Exporter
+            </a>
+        </div>
+    </div>
+
+    <!-- Tableau principal -->
+    <div class="table-responsive">
+        <table class="professional-table">
+            <thead>
+                <tr>
+                    <th width="80">ID</th>
+                    <th>Nom Complet</th>
+                    <th>Email</th>
+                    <th>Adresse</th>
+                    <th>Contact</th>
+                    <th>Statut</th>
+                    <th width="150">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for apprenant in apprenants_approuves %}
+                <tr data-status="{% if apprenant.statut %}active{% else %}inactive{% endif %}">
+                    <td>APP-{{ apprenant.user.id|stringformat:"04d" }}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm me-3">
+                                <span class="avatar-text bg-primary-light text-primary">
+                                    {{ apprenant.user.first_name|first|upper }}{{ apprenant.user.last_name|first|upper }}
+                                </span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">{{ apprenant.user.get_full_name }}</h6>
+                                <small class="text-muted">@{{ apprenant.user.username }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ apprenant.user.email }}</td>
+                    <td>{{ apprenant.adress|default:"-"|truncatechars:20 }}</td>
+                    <td>{{ apprenant.telephone|default:"-" }}</td>
+                    <td>
+                        <span class="badge bg-success rounded-pill">
+                            <i class="fas fa-check-circle me-1"></i> Actif
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'modifier_apprenant' apprenant.user.id %}" 
+                               class="btn btn-action btn-sm btn-edit"
+                               data-bs-toggle="tooltip" title="Modifier">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <a href="{% url 'supprimer_apprenant' apprenant.user.id %}"
+                               class="btn btn-action btn-sm btn-delete"
+                               data-bs-toggle="tooltip" 
+                               title="Supprimer"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet apprenant ?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                           
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <img src="{% static 'images/empty.svg' %}" alt="Aucune donnée" width="150">
+                            <h5>Aucun stagiaire approuvé</h5>
+                            <p class="text-muted">Commencez par ajouter un nouveau stagiaire</p>
+                            <a href="{% url 'creation_compte' %}" class="btn btn-primary-custom mt-3">
+                                <i class="fas fa-plus me-2"></i>Ajouter un stagiaire
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="Premier">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Dernier">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    /* Styles pour l'en-tête centré */
+    .table-header {
+        padding: 2rem 0;
+        margin: 0 auto;
+        max-width: 800px;
+        margin-right: 80px;
+    }
+    
+    .table-title {
+        color: #185a76;
+        font-weight: 600;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .table-subtitle {
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Styles pour les boutons d'action */
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 6px;
+        color: white;
+    }
+    
+    .btn-edit {
+        background-color: #185a76;
+    }
+    
+    .btn-delete {
+        background-color: #dc3545;
+    }
+    
+    .btn-view {
+        background-color: #6c757d;
+    }
+    
+    /* Styles pour les avatars */
+    .avatar-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    .bg-primary-light {
+        background-color: rgba(24, 90, 118, 0.1);
+    }
+    
+    .text-primary {
+        color: #185a76 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialisation des tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Filtrage par statut
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function() {
+                const value = this.value;
+                document.querySelectorAll('.professional-table tbody tr').forEach(function(row) {
+                    if (value === "") {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = row.dataset.status === value ? '' : 'none';
+                    }
+                });
+            });
+        }
+        
+        // Fonctionnalité de recherche
+        const searchInput = document.querySelector('[data-search-table]');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const value = this.value.toLowerCase();
+                document.querySelectorAll('.professional-table tbody tr').forEach(function(row) {
+                    if (row.style.display === 'none') return;
+                    
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(value) ? '' : 'none';
+                });
+            });
+        }
+        
+        // Export avec gestion des filtres
+        document.getElementById('exportBtn').addEventListener('click', function(e) {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.querySelector('[data-search-table]').value;
+            
+            let exportUrl = "{% url 'exporter_apprenants_csv' %}";
+            const params = new URLSearchParams();
+            
+            if (statusFilter) params.append('status', statusFilter);
+            if (searchTerm) params.append('search', searchTerm);
+            
+            if (params.toString()) {
+                exportUrl += '?' + params.toString();
+                window.location.href = exportUrl;
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

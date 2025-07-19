@@ -1,0 +1,761 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block page_title %}Page de conversation{% endblock %}
+
+{% block title %}<i class="fas fa-paper-plane"></i> Nouveau Message{% endblock %}
+
+{% block content %}
+<div class="messaging-app">
+    <!-- Header élégant -->
+    <header class="compose-header">
+        <div class="header-content">
+            <a href="{% url 'messagerie:boite_reception' %}" class="btn-back" data-micro-interaction="ripple">
+                <i class="fas fa-arrow-left"></i>
+                <span class="micro-interaction"></span>
+            </a>
+            <h1 class="compose-title">
+                <i class="fas fa-envelope-open-text"></i>
+                Nouvelle discussion
+            </h1>
+        </div>
+    </header>
+
+    <!-- Formulaire premium -->
+    <form method="post" enctype="multipart/form-data" class="compose-form">
+        {% csrf_token %}
+        
+        <!-- Sujet avec effet de focus -->
+        <div class="form-group floating-label">
+            {{ form.sujet }}
+            <label for="id_sujet">Sujet</label>
+            <div class="focus-border"></div>
+            <i class="fas fa-heading form-icon"></i>
+        </div>
+        
+        <!-- Destinataires avec recherche -->
+        <div class="form-group">
+            <div class="form-header">
+                <label class="form-label">
+                    <i class="fas fa-users"></i>
+                    Destinataires approuvés
+                </label>
+                <div class="search-recipients">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher des contacts..." id="searchRecipients">
+                </div>
+            </div>
+            
+            <div class="recipients-container custom-scrollbar">
+                <div class="row">
+                    {% for user in form.destinataires.field.queryset %}
+                    <div class="col-md-6 recipient-item" data-user-id="{{ user.id }}">
+                        <div class="recipient-card">
+                            <input type="checkbox" 
+                                   name="destinataires" 
+                                   value="{{ user.id }}" 
+                                   id="dest_{{ user.id }}" 
+                                   class="recipient-checkbox">
+                            <label for="dest_{{ user.id }}" class="recipient-label">
+                                <div class="recipient-avatar">
+                                    <div class="avatar" style="background-color: {% cycle '#185a76' '#2c7be5' '#00c9a7' '#e63757' %}">
+                                        {{ user.get_full_name|default:user.username|first|upper }}
+                                    </div>
+                                </div>
+                                <div class="recipient-info">
+                                    <h5 class="recipient-name">
+                                        {{ user.get_full_name|default:user.username }}
+                                        {% if user.is_staff %}
+                                        <i class="fas fa-shield-alt verified-badge" data-tooltip="Administrateur"></i>
+                                        {% endif %}
+                                    </h5>
+                                    <span class="recipient-role">
+                                        {% if user.is_staff %}Admin
+                                        {% elif user.formateur.statut %}Formateur
+                                        {% elif user.apprenant.statut %}Apprenant
+                                        {% else %}Utilisateur{% endif %}
+                                    </span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <i class="fas fa-user-slash"></i>
+                            <p>Aucun destinataire disponible</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Message avec éditeur enrichi -->
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fas fa-edit"></i>
+                Message
+            </label>
+            <div class="compose-editor">
+                {{ form.contenu }}
+                <div class="editor-toolbar">
+                    <button type="button" class="btn-format" data-format="bold"><i class="fas fa-bold"></i></button>
+                    <button type="button" class="btn-format" data-format="italic"><i class="fas fa-italic"></i></button>
+                    <button type="button" class="btn-format" data-format="link"><i class="fas fa-link"></i></button>
+                    <button type="button" class="btn-format" data-format="list"><i class="fas fa-list-ul"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pièces jointes avec aperçu -->
+        <div class="form-group">
+            <div class="form-header">
+                <label class="form-label">
+                    <i class="fas fa-paperclip"></i>
+                    Pièces jointes
+                </label>
+                <div class="file-upload-wrapper">
+                    <label for="id_fichier" class="btn-upload">
+                        <i class="fas fa-plus"></i> Ajouter un fichier
+                        <input type="file" name="fichier" id="id_fichier">
+                    </label>
+                </div>
+            </div>
+            <div class="attachments-preview" id="attachmentsPreview">
+                <!-- Aperçu des fichiers ajoutés -->
+            </div>
+        </div>
+        
+        <!-- Actions du formulaire -->
+        <div class="form-actions">
+            
+            <button type="submit" class="btn btn-send" data-micro-interaction="ripple">
+                <i class="fas fa-paper-plane"></i> Envoyer
+                <span class="micro-interaction"></span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Styles Premium -->
+<style>
+    :root {
+        --primary-color: #185a76;
+        --primary-dark: #0f455d;
+        --primary-light: rgba(24, 90, 118, 0.1);
+        --secondary-color: #2c7be5;
+        --accent-color: #00c9a7;
+        --danger-color: #e63757;
+        --dark-color: #12263f;
+        --light-color: #f9fbfd;
+        --border-color: #e3ebf6;
+        --success-color: #00d97e;
+    }
+
+    /* Structure de base */
+    .messaging-app {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    /* En-tête */
+    .compose-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .btn-back {
+        color: white;
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        margin-right: 1rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+    .btn-back:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .compose-title {
+        font-size: 1.5rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    /* Formulaire */
+    .compose-form {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Champs de formulaire */
+    .floating-label {
+        position: relative;
+    }
+
+    #id_sujet {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .floating-label label {
+        position: absolute;
+        left: 3rem;
+        top: 1rem;
+        color: var(--text-secondary);
+        transition: all 0.3s;
+        pointer-events: none;
+    }
+
+    .floating-label .focus-border {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+        transition: all 0.4s;
+    }
+
+    .floating-label .form-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+    }
+
+    #id_sujet:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+
+    #id_sujet:focus ~ label,
+    #id_sujet:not(:placeholder-shown) ~ label {
+        top: -0.5rem;
+        left: 3rem;
+        font-size: 0.8rem;
+        background-color: white;
+        padding: 0 0.5rem;
+        color: var(--primary-color);
+    }
+
+    #id_sujet:focus ~ .focus-border {
+        width: 100%;
+    }
+
+    /* Destinataires */
+    .search-recipients {
+        position: relative;
+        width: 250px;
+    }
+
+    .search-recipients i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+    }
+
+    #searchRecipients {
+        width: 100%;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 50px;
+        font-size: 0.9rem;
+    }
+
+    #searchRecipients:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+
+    .recipients-container {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: var(--primary-light);
+        border-radius: 3px;
+    }
+
+    .recipient-item {
+        margin-bottom: 1rem;
+    }
+
+    .recipient-card {
+        display: flex;
+        align-items: center;
+        transition: all 0.3s;
+    }
+
+    .recipient-checkbox {
+        display: none;
+    }
+
+    .recipient-label {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .recipient-checkbox:checked ~ .recipient-label {
+        background-color: var(--primary-light);
+    }
+
+    .recipient-avatar {
+        margin-right: 1rem;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+
+    .recipient-info {
+        flex: 1;
+    }
+
+    .recipient-name {
+        font-size: 0.95rem;
+        margin: 0 0 0.25rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .verified-badge {
+        color: var(--secondary-color);
+        font-size: 0.8rem;
+    }
+
+    .recipient-role {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        background-color: var(--light-color);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+    }
+
+    /* Éditeur de message */
+    .compose-editor {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #id_contenu {
+        width: 100%;
+        min-height: 200px;
+        padding: 1rem;
+        border: none;
+        resize: none;
+        font-family: inherit;
+    }
+
+    #id_contenu:focus {
+        outline: none;
+    }
+
+    .editor-toolbar {
+        background-color: var(--light-color);
+        padding: 0.5rem;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-format {
+        background: none;
+        border: none;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+
+    .btn-format:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Pièces jointes */
+    .file-upload-wrapper {
+        position: relative;
+    }
+
+    .btn-upload {
+        background-color: var(--light-color);
+        color: var(--primary-color);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+    }
+
+    .btn-upload:hover {
+        background-color: var(--primary-light);
+    }
+
+    .btn-upload input {
+        display: none;
+    }
+
+    .attachments-preview {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    /* Actions du formulaire */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-draft {
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-draft:hover {
+        background-color: #e5ebf5;
+    }
+
+    .btn-send {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-send:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(24, 90, 118, 0.2);
+        color: #e3ebf6;
+    }
+
+    /* Micro-interaction */
+    .micro-interaction {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    /* États vides */
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-state i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    /* Tooltip */
+    [data-tooltip] {
+        position: relative;
+    }
+
+    [data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--dark-color);
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s;
+        z-index: 100;
+        margin-bottom: 5px;
+    }
+
+    [data-tooltip]::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: var(--dark-color) transparent transparent transparent;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s;
+        margin-bottom: -5px;
+    }
+
+    [data-tooltip]:hover::after,
+    [data-tooltip]:hover::before {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Animations */
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .compose-form {
+            padding: 1.5rem;
+        }
+        
+        .form-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .search-recipients {
+            width: 100%;
+        }
+        
+        .recipient-item {
+            width: 100%;
+        }
+        
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+        
+        .btn-draft,
+        .btn-send {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- JavaScript Premium -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Micro-interactions
+    document.querySelectorAll('[data-micro-interaction="ripple"]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const ripple = this.querySelector('.micro-interaction');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            ripple.style.width = ripple.style.height = `${Math.max(rect.width, rect.height)}px`;
+            
+            ripple.classList.add('animate');
+            setTimeout(() => {
+                ripple.classList.remove('animate');
+            }, 600);
+        });
+    });
+
+    // Recherche de destinataires
+    const searchInput = document.getElementById('searchRecipients');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('.recipient-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+        });
+    }
+
+    // Gestion des pièces jointes
+    const fileInput = document.getElementById('id_fichier');
+    const previewContainer = document.getElementById('attachmentsPreview');
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+            
+            if (this.files.length > 0) {
+                Array.from(this.files).forEach(file => {
+                    const preview = document.createElement('div');
+                    preview.className = 'attachment-preview';
+                    
+                    if (file.type.startsWith('image/')) {
+                        preview.innerHTML = `
+                            <div class="attachment-thumbnail">
+                                <img src="${URL.createObjectURL(file)}" alt="${file.name}">
+                            </div>
+                            <div class="attachment-details">
+                                <span class="attachment-name">${file.name}</span>
+                                <span class="attachment-size">${formatFileSize(file.size)}</span>
+                            </div>
+                            <button class="btn-remove-attachment" data-file-name="${file.name}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                    } else {
+                        preview.innerHTML = `
+                            <div class="attachment-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="attachment-details">
+                                <span class="attachment-name">${file.name}</span>
+                                <span class="attachment-size">${formatFileSize(file.size)}</span>
+                            </div>
+                            <button class="btn-remove-attachment" data-file-name="${file.name}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                    }
+                    
+                    previewContainer.appendChild(preview);
+                });
+            }
+        });
+    }
+
+    // Formatage du texte
+    document.querySelectorAll('.btn-format').forEach(button => {
+        button.addEventListener('click', function() {
+            const format = this.dataset.format;
+            const textarea = document.getElementById('id_contenu');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let before = textarea.value.substring(0, start);
+            let after = textarea.value.substring(end);
+            
+            switch(format) {
+                case 'bold':
+                    textarea.value = before + '**' + selectedText + '**' + after;
+                    break;
+                case 'italic':
+                    textarea.value = before + '*' + selectedText + '*' + after;
+                    break;
+                case 'link':
+                    textarea.value = before + '[texte](url)' + after;
+                    break;
+                case 'list':
+                    textarea.value = before + '- ' + selectedText.replace(/\n/g, '\n- ') + after;
+                    break;
+            }
+            
+            textarea.focus();
+        });
+    });
+
+    // Fonction utilitaire pour formater la taille des fichiers
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+});
+</script>
+{% endblock %}

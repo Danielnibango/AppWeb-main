@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<br><br><br>
+<td style="display: inline-flex; gap: 1px;">
+    <a href="{% url 'supprimer_apprenant' apprenant.user.id %}" 
+       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce stagiaire ?');">
+        <button class="btn btn-danger btn-sm">
+            <i class="fas fa-trash"></i> Supprimer
+        </button>
+    </a>
+</td>
+
+{% endblock content %}

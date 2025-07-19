@@ -15,6 +15,11 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LOGIN_URL = '/login'
+
+PAYPAL_CLIENT_ID = 'AfshFEaRQVRxjQb04tmaykNwABiZnr6GOMOohJmrNukvEJ4AHtkDgxnvR0OJ6_xVelYSUBDQtBuA777r'
+PAYPAL_CLIENT_SECRET = 'EKHdwQzbAMQAEYiz3QVHh6_lA5X4S4Vt0HzitnCcuWSdsKcEAz7EXXL4ag58OFu6dCoQcg_Hs_mPguV1'
+PAYPAL_MODE = 'sandbox'  # Mode test
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -28,8 +33,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
+# Application 
 
+ 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'inscription',
+    'django.contrib.humanize',
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -45,10 +54,14 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+  
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'inscription.middleware.AuthRequiredMiddleware', 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+LOGIN_URL = '/login/'
 
 ROOT_URLCONF = 'AppWeb.urls'
 
@@ -63,6 +76,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+              
+               
             ],
         },
     },
@@ -81,6 +96,9 @@ DATABASES = {
     }
 }
 
+ 
+
+ 
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -106,7 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Définir le bon fuseau horaire pour le Burundi
+TIME_ZONE = 'Africa/Bujumbura'  # UTC+2
+
 
 USE_I18N = True
 
@@ -122,3 +142,26 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',  # 🔹 Ajoute ton domaine local
+    'http://localhost:8000',   # 🔹 Si tu utilises "localhost"
+]
+
+CSRF_COOKIE_SECURE = False  # 🔹 Met à False en local (sinon il exige HTTPS)
+
+# Configuration des médias
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Configuration des fichiers
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+
+# Email configuration
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Pour développement
+DEFAULT_FROM_EMAIL = 'infojosnetent@gmail.com'  # Email expéditeur
+CONTACT_EMAIL = 'danielnibangodriver1@gmail.com'  # Email destinataire

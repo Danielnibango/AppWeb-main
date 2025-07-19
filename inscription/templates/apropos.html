@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}À propos | JOSNET Ltd{% endblock %}
+{% load static %}
+{% block content %}
+<!-- Hero -->
+<section class="hero-section" style="background-image: linear-gradient(rgba(24, 90, 118, 0.9), rgba(12, 53, 68, 0.9)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Notre <span class="text-info">Mission</span></h1>
+        <p class="lead">Former la prochaine génération de talents tech en Afrique.</p>
+    </div>
+</section>
+
+<!-- Histoire -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4">
+                <h2 class="text-primary mb-4">Notre <span class="text-dark">Histoire</span></h2>
+                <p>Devenir un leader reconnu dans le secteur des technologies de l’information et des communications, en offrant des services de hautes qualité et en restant à la pointe de l’innovation..
+
+                    Historique
+                    JOSNET a été fondée dans l'objectif de répondre aux besoins croissants en connectivité et en services numériques dans le pays. Depuis sa création, l'entreprise a élargi son champ d'activités pour inclure non seulement des services de télécommunications mais aussi des solutions créatives adaptées aux exigences du marché local. Grâce à l'expertise de ses fondateurs, equipe JOSNET, l'entreprise s'est rapidement développée pour devenir un fournisseur de choix pour les entreprises et les particuliers cherchant des solutions de haute qualité.</p>
+                <p>La mission de JOSNET est de fournir des services de qualité dans le domaine des télécommunications et des technologies de l'information, en mettant l'accent sur l'innovation et la satisfaction client. Elle s'engage à offrir des solutions adaptées aux besoins spécifiques de chaque client, que ce soit dans le secteur privé ou public, tout en contribuant au développement numérique du Burundi. .</p>
+                <div class="d-flex mt-4">
+                    <div class="pe-4 border-end">
+                        <h3 class="text-primary">12+</h3>
+                        <p>Partenaires entreprises</p>
+                    </div>
+                    <div class="ps-4">
+                        <h3 class="text-primary">82%</h3>
+                        <p>Taux de satisfaction</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <img src="{% static 'images/josteam.jpg' %}" class="img-fluid rounded shadow" alt="Équipe JOSNET">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Valeurs -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Nos <span class="text-primary">Valeurs</span></h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="icon-box mb-3 mx-auto">
+                            <i class="fas fa-hand-holding-heart text-primary fa-lg"></i>
+                        </div>
+                        <h4>Pédagogie Adaptée</h4>
+                        <p>Méthodes actives basées sur des projets concrets pour une montée en compétences rapide.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="icon-box mb-3 mx-auto">
+                            <i class="fas fa-users text-primary fa-lg"></i>
+                        </div>
+                        <h4>Communauté</h4>
+                        <p>Accès à un réseau d'anciens apprenants et à des événements networking exclusifs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="icon-box mb-3 mx-auto">
+                            <i class="fas fa-chart-line text-primary fa-lg"></i>
+                        </div>
+                        <h4>Impact Mesurable</h4>
+                        <p>85% de nos stagiaires trouvent un emploi dans les 2 mois suivant leur formation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Partenaires -->
+ 
+<section class="py-5 bg-light">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center mb-5">
+                <h2 class="text-center mb-5">Nos partenaires<span class="text-primary"> & recruteurs</span></h2>
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">Ils recrutent nos diplômés</span>
+              
+                <p class="lead">Ils font confiance à la qualité de nos formations et embauchent nos diplômés</p>
+            </div>
+        </div>
+        <style>
+            /* Styles pour le défilement */
+            .partners-scroll-container {
+                overflow: hidden;
+                width: 100%;
+                position: relative;
+            }
+            
+            .partners-scroll {
+                display: flex;
+                animation: scroll 20s linear infinite;
+                width: calc(250px * 10); /* Ajustez selon le nombre de logos */
+            }
+            
+            .partners-scroll:hover {
+                animation-play-state: paused;
+            }
+            
+            @keyframes scroll {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+            
+            /* Conservez vos styles existants */
+            .grayscale-hover {
+                transition: all 0.3s ease;
+            }
+            .grayscale-hover:hover {
+                filter: grayscale(0);
+            }
+        </style>
+        
+        <div class="partners-scroll-container">
+            <div class="partners-scroll">
+                <!-- Dupliquez vos logos pour l'effet infini -->
+
+                <div class="p-3 grayscale-hover mx-2">
+                    <img src="{% static 'images/bic.png' %}" class="img-fluid" alt="Partenaire" style="height: 80px; width: auto;">
+                </div>
+                <div class="p-3 grayscale-hover mx-2">
+                    <img src="{% static 'images/zebra.png' %}" class="img-fluid" alt="Partenaire" style="height: 80px; width: auto;">
+                </div>
+                <div class="p-3 grayscale-hover mx-2">
+                    <img src="{% static 'images/bbs.png' %}" class="img-fluid" alt="Partenaire" style="height: 80px; width: auto;">
+                </div>
+                <div class="p-3 grayscale-hover mx-2">
+                    <img src="{% static 'images/socabu.jpg' %}" class="img-fluid" alt="Partenaire" style="height: 80px; width: auto;">
+                </div>
+                
+                <!-- Répétez les mêmes logos pour créer la boucle -->
+                
+                <div class="p-3 grayscale-hover mx-2">
+                    <img src="{% static 'images/cinet.jpg' %}" class="img-fluid" alt="Partenaire" style="height: 80px; width: auto;">
+                </div>
+                <div class="p-3 grayscale-hover mx-2">
+                    <img src="{% static 'images/josnet.jpg' %}" class="img-fluid" alt="Partenaire" style="height: 80px; width: auto;">
+                </div>
+               
+               
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'index.html' %}
+
+{% block title %}Supprimer la conversation - {{ conversation.sujet }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h4><i class="fas fa-exclamation-triangle"></i> Confirmation de suppression</h4>
+        </div>
+        <div class="card-body">
+            <h5>Êtes-vous sûr de vouloir supprimer cette conversation ?</h5>
+            <p class="text-muted">
+                <strong>Sujet :</strong> {{ conversation.sujet }}<br>
+                <strong>Participants :</strong> 
+                {% for participant in conversation.participants.all %}
+                    {{ participant.get_full_name|default:participant.username }}
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            
+            {% if request.user.is_staff %}
+            <div class="alert alert-warning">
+                <strong>Attention :</strong> En tant qu'administrateur, cette suppression sera définitive pour tous les participants.
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                La conversation sera seulement masquée de votre vue, les autres participants pourront toujours la voir.
+            </div>
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="{% url 'messagerie:voir_conversation' conversation.id %}" class="btn btn-secondary me-2">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Confirmer la suppression
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

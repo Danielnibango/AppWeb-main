@@ -1,0 +1,379 @@
+{% extends 'index_apprenant.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br>
+<div class="inscription-container">
+    <div class="header-section">
+        <h1 class="page-title">
+            <i class="fas fa-user-graduate me-2" style="margin-left: 420px;"></i>Inscription à une formation
+        </h1>
+        <br><br><br>
+        <div class="progress-steps">
+            <div class="step active">
+                <span>1</span> Choix du cours
+            </div>
+            <div class="step">
+                <span>2</span> Paiement
+            </div>
+            <div class="step">
+                <span>3</span> Confirmation
+            </div>
+        </div>
+    </div>
+    <br><br><br>
+    <!-- Infos utilisateur -->
+    <div class="user-info-card card" style="margin-left: 8%;">
+        <div class="card-header">
+            <h3><i class="fas fa-user-circle me-2"></i>Vos informations</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong><i class="fas fa-user me-2"></i>Nom :</strong> {{ user }}</p>
+                    <p><strong><i class="fas fa-envelope me-2"></i>Email :</strong> {{ user.email }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong><i class="fas fa-calendar-alt me-2"></i>Date d'inscription :</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire d'inscription -->
+    <div class="form-card card"  style="margin-left: 8%;">
+        <div class="card-header">
+            <h3><i class="fas fa-book-open me-2"></i>Choix du cours</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4 form-group">
+                            <label for="moduleSelect" class="form-label">
+                                <i class="fas fa-cubes me-2"></i>Module *
+                            </label>
+                            <select id="moduleSelect" name="module" class="form-select" required>
+                                <option value="">Choisir un module...</option>
+                                {% for module in modules %}
+                                    <option value="{{ module.id }}">{{ module.nom }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Veuillez sélectionner un module.</div>
+                        </div>
+                        
+                        <div class="mb-4 form-group">
+                            <label for="coursSelect" class="form-label">
+                                <i class="fas fa-book me-2"></i>Cours *
+                            </label>
+                            <select id="coursSelect" name="cours" class="form-select" disabled required>
+                                <option value="">Choisissez d'abord un module</option>
+                            </select>
+                            <div class="invalid-feedback">Veuillez sélectionner un cours.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div id="coursDetails" class="details-card card" style="display:none;">
+                            <div class="card-header primary text-white" style="background-color: #003f5b;">
+                                <i class="fas fa-info-circle me-2"></i>Détails du cours
+                            </div>
+                            <div class="card-body">
+                                <div class="detail-item">
+                                    <i class="fas fa-cube me-2"></i>
+                                    <strong>Module:</strong> <span id="moduleName">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>
+                                    <strong>Encadreur:</strong> <span id="formateurName">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-money-bill-wave me-2"></i>
+                                    <strong>Prix:</strong> <span id="coursPrix">-</span> Fbu
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Durée: 2Mois</strong> <span id="coursDuree">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-footer text-end mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i> Paiement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #003f5b;
+        --primary-light: #e8f0fe;
+        --secondary-color: #6c757d;
+        --success-color: #003f5b;
+        --border-color: #e0e0e0;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .inscription-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+        
+    }
+
+    .header-section {
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        color: var(--secondary-color);
+    }
+
+    .step:not(:last-child):after {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 50%;
+        right: -50%;
+        height: 2px;
+        background: var(--border-color);
+        z-index: 0;
+    }
+
+    .step.active {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .step.active span {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .step span {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        background: var(--border-color);
+        margin-right: 8px;
+        text-align: center;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 25px;
+    }
+
+    .card-header {
+        background-color: white;
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 20px;
+        border-radius: 10px 10px 0 0 !important;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .user-info-card .card-body p {
+        margin-bottom: 10px;
+        color: var(--secondary-color);
+    }
+
+    .user-info-card .card-body strong {
+        color: #495057;
+        min-width: 120px;
+        display: inline-block;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-select, .form-control {
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 10px 15px;
+        height: auto;
+        transition: all 0.3s;
+    }
+
+    .form-select:focus, .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(44, 110, 203, 0.15);
+    }
+
+    .details-card {
+        height: 100%;
+    }
+
+    .detail-item {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+    }
+
+    .detail-item i {
+        color: var(--primary-color);
+        width: 20px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #003f5b;
+        transform: translateY(-2px);
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .was-validated .form-select:invalid, 
+    .was-validated .form-control:invalid {
+        border-color: #dc3545;
+    }
+
+    .was-validated .form-select:invalid:focus, 
+    .was-validated .form-control:invalid:focus {
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const moduleSelect = document.getElementById('moduleSelect');
+        const coursSelect = document.getElementById('coursSelect');
+        const coursDetails = document.getElementById('coursDetails');
+        
+        // Validation côté client
+        (function() {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            
+            Array.from(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+        
+        // Chargement des cours quand le module change
+        moduleSelect.addEventListener('change', async function() {
+            const moduleId = this.value;
+            
+            coursSelect.disabled = true;
+            coursSelect.innerHTML = '<option value="">Chargement...</option>';
+            coursDetails.style.display = 'none';
+            
+            if (!moduleId) {
+                coursSelect.innerHTML = '<option value="">Choisissez d\'abord un module</option>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/get-cours/?module_id=${moduleId}`);
+                const data = await response.json();
+                
+                coursSelect.innerHTML = '<option value="">Choisir un cours...</option>';
+                data.cours.forEach(cours => {
+                    const option = document.createElement('option');
+                    option.value = cours.id;
+                    option.textContent = cours.nom;
+                    coursSelect.appendChild(option);
+                });
+                
+                coursSelect.disabled = false;
+            } catch (error) {
+                console.error("Erreur:", error);
+                coursSelect.innerHTML = '<option value="">Erreur de chargement</option>';
+            }
+        });
+        
+        // Affichage des détails quand un cours est sélectionné
+        coursSelect.addEventListener('change', async function() {
+            const coursId = this.value;
+            coursDetails.style.display = 'none';
+            
+            if (!coursId) return;
+            
+            try {
+                const response = await fetch(`/get-cours-details/?cours_id=${coursId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('moduleName').textContent = data.module;
+                    document.getElementById('formateurName').textContent = data.formateur;
+                    document.getElementById('coursPrix').textContent = data.prix;
+                    document.getElementById('coursDuree').textContent = data.heure;
+                    
+                    coursDetails.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+            }
+        });
+    });
+</script>
+{% endblock %}

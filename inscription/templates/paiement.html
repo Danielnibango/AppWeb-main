@@ -1,0 +1,387 @@
+{% extends 'index_apprenant.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br>
+<div class="paiement-container">
+    <div class="header-section">
+        <h1 class="page-title">
+            <i class="fas fa-credit-card me-2" style="margin-left: 440px;"></i>Paiement du cours
+        </h1>
+        <br><br><br>
+        <div class="progress-steps">
+            <div class="step">
+                <span>1</span> Choix du cours
+            </div>
+            <div class="step active">
+                <span>2</span> Paiement
+            </div>
+            <div class="step">
+                <span>3</span> Confirmation
+            </div>
+        </div>
+    </div>
+   <br><br><br>
+    <!-- Récapitulatif -->
+    <div class="recap-card card" style="margin-left: 10%;">
+        <div class="card-header">
+            <h3><i class="fas fa-receipt me-2"></i>Récapitulatif</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="recap-item">
+                        <i class="fas fa-user me-2"></i>
+                        <strong>Nom :</strong> {{ user }}
+                    </div>
+                    <div class="recap-item">
+                        <i class="fas fa-envelope me-2"></i>
+                        <strong>Email :</strong> {{ apprenant.email }}
+                    </div>
+                    
+                </div>
+                <div class="col-md-6">
+                    <div class="recap-item">
+                        <i class="fas fa-cube me-2"></i>
+                        <strong>Module :</strong> {{ module.nom }}
+                    </div>
+                    <div class="recap-item">
+                        <i class="fas fa-book me-2"></i>
+                        <strong>Cours :</strong> {{ cours.titre }}
+                    </div>
+                    <div class="recap-item">
+                        <i class="fas fa-money-bill-wave me-2"></i>
+                        <strong>Prix :</strong> {{ cours.price }} Fbu
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire de paiement -->
+    <div class="form-card card" style="margin-left: 10%;">
+        <div class="card-header">
+            <h3><i class="fas fa-money-check-alt me-2"></i>Informations de paiement</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="mb-4 form-group">
+                    <label for="mode_paiement" class="form-label">
+                        <i class="fas fa-wallet me-2"></i>Mode de paiement *
+                    </label>
+                    <select id="mode_paiement" name="mode_paiement" class="form-select" required>
+                        <option value="">-- Choisir un mode --</option>
+                        <option value="mobile_money">Mobile Money</option>
+                        <option value="carte_bancaire">Carte Bancaire</option>
+                    </select>
+                    <div class="invalid-feedback">Veuillez sélectionner un mode de paiement.</div>
+                </div>
+
+                <!-- Mobile Money -->
+                <div id="mobile_money_fields" class="payment-method" style="display:none;">
+                    <div class="mb-4 form-group">
+                        <label for="operateur" class="form-label">
+                            <i class="fas fa-sim-card me-2"></i>Opérateur *
+                        </label>
+                        <select id="operateur" name="operateur" class="form-select" required>
+                            <option value="">-- Choisir un opérateur --</option>
+                            <option value="Orange Money">Orange Money (Code : 334231)</option>
+                            <option value="MTN Mobile Money">MTN Mobile Money (Code : 667780)</option>
+                            <option value="Lumicash">Lumicash (Code : 008765)</option>
+                        </select>
+                        <div class="invalid-feedback">Veuillez sélectionner un opérateur.</div>
+                    </div>
+                    <div class="mb-4 form-group">
+                        <label for="numero_mobile" class="form-label">
+                            <i class="fas fa-mobile-alt me-2"></i>Numéro Mobile *
+                        </label>
+                        <input type="text" id="numero_mobile" name="numero_mobile" class="form-control" 
+                               placeholder="Numéro mobile utilisé pour le paiement" required>
+                        <div class="invalid-feedback">Veuillez entrer un numéro valide.</div>
+                    </div>
+                </div>
+
+                <!-- Carte Bancaire -->
+                <div id="carte_bancaire_fields" class="payment-method" style="display:none;">
+                    <div class="mb-4 form-group">
+                        <label for="numero_carte" class="form-label">
+                            <i class="far fa-credit-card me-2"></i>Numéro de carte *
+                        </label>
+                        <input type="text" id="numero_carte" name="numero_carte" class="form-control" 
+                               placeholder="XXXX XXXX XXXX XXXX" required>
+                        <div class="invalid-feedback">Veuillez entrer un numéro de carte valide.</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="date_expiration" class="form-label">
+                                <i class="far fa-calendar-alt me-2"></i>Date d'expiration *
+                            </label>
+                            <input type="month" id="date_expiration" name="date_expiration" class="form-control" required>
+                            <div class="invalid-feedback">Veuillez entrer une date valide.</div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="cvv" class="form-label">
+                                <i class="fas fa-lock me-2"></i>CVV *
+                            </label>
+                            <input type="text" id="cvv" name="cvv" class="form-control" maxlength="4" 
+                                   placeholder="123" required>
+                            <div class="invalid-feedback">Veuillez entrer un CVV valide.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4 form-group">
+                    <label for="reference_paiement" class="form-label">
+                        <i class="fas fa-receipt me-2"></i>Référence de paiement *
+                    </label>
+                    <input type="text" id="reference_paiement" name="reference_paiement" class="form-control" 
+                           placeholder="Référence de la transaction" required>
+                    <div class="invalid-feedback">Veuillez entrer une référence.</div>
+                </div>
+
+                <div class="form-footer text-end mt-4">
+    <button type="submit" class="btn btn-success d-flex align-items-center justify-content-center" style="padding: 20px; width: 150px;">
+        <i class="fas fa-check-circle me-2"></i>
+        <span class="text-center">Confirmer</span>
+    </button>
+</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #003f5b;
+        --primary-light: #e8f0fe;
+        --secondary-color: #6c757d;
+        --success-color: #003f5b;
+        --border-color: #e0e0e0;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .paiement-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+    .header-section {
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        
+    }
+
+    .progress-steps {
+        display:flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        padding: 0px 0;
+        color: var(--secondary-color);
+    }
+
+    .step:not(:last-child):after {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 50%;
+        right: -50%;
+        height: 2px;
+        background: var(--border-color);
+        z-index: 0;
+    }
+
+    .step.active {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .step.active span {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .step span {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        background: var(--border-color);
+        margin-right: 8px;
+        text-align: center;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 25px;
+    }
+
+    .card-header {
+        background-color: white;
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 20px;
+        border-radius: 10px 10px 0 0 !important;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .recap-item {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+    }
+
+    .recap-item i {
+        color: var(--primary-color);
+        width: 20px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-select, .form-control {
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 10px 15px;
+        height: auto;
+        transition: all 0.3s;
+    }
+
+    .form-select:focus, .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(44, 110, 203, 0.15);
+    }
+
+    .payment-method {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .btn-success {
+        background-color: var(--success-color);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-success:hover {
+        background-color: #003f5b;
+        transform: translateY(-2px);
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .was-validated .form-select:invalid, 
+    .was-validated .form-control:invalid {
+        border-color: #dc3545;
+    }
+
+    .was-validated .form-select:invalid:focus, 
+    .was-validated .form-control:invalid:focus {
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Validation côté client
+        (function() {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            
+            Array.from(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+        
+        // Affichage des champs selon le mode de paiement
+        const modePaiementSelect = document.getElementById('mode_paiement');
+        const mobileMoneyFields = document.getElementById('mobile_money_fields');
+        const carteBancaireFields = document.getElementById('carte_bancaire_fields');
+
+        modePaiementSelect.addEventListener('change', function() {
+            if(this.value === 'mobile_money'){
+                mobileMoneyFields.style.display = 'block';
+                carteBancaireFields.style.display = 'none';
+                
+                // Désactiver la validation pour les champs cachés
+                document.getElementById('numero_carte').required = false;
+                document.getElementById('date_expiration').required = false;
+                document.getElementById('cvv').required = false;
+                
+                // Activer la validation pour les champs visibles
+                document.getElementById('operateur').required = true;
+                document.getElementById('numero_mobile').required = true;
+            } else if(this.value === 'carte_bancaire'){
+                mobileMoneyFields.style.display = 'none';
+                carteBancaireFields.style.display = 'block';
+                
+                // Désactiver la validation pour les champs cachés
+                document.getElementById('operateur').required = false;
+                document.getElementById('numero_mobile').required = false;
+                
+                // Activer la validation pour les champs visibles
+                document.getElementById('numero_carte').required = true;
+                document.getElementById('date_expiration').required = true;
+                document.getElementById('cvv').required = true;
+            } else {
+                mobileMoneyFields.style.display = 'none';
+                carteBancaireFields.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

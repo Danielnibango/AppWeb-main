@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<br><br><br>
+<h2>Inscrire Stagiaire</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ apprenant_form.as_p }}
+    <button type="submit">S'inscrire</button>
+</form>
+
+{% endblock content %}

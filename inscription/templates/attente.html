@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation en cours | JOSNET Formation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #185a76;
+            --primary-dark: #0c3544;
+            --primary-light: #e9f7fe;
+            --accent: #ff7e33;
+            --text: #2d3748;
+            --text-light: #718096;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background-image: radial-gradient(circle at 10% 20%, rgba(233, 247, 254, 0.5) 0%, rgba(248, 250, 252, 0) 90%);
+        }
+
+        .validation-card {
+            max-width: 720px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(24, 90, 118, 0.08);
+            overflow: hidden;
+            position: relative;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(24, 90, 118, 0.1);
+        }
+
+        .validation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(24, 90, 118, 0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 2.5rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .validation-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .validation-icon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(4px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: 3rem;
+        }
+
+        .user-greeting {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-greeting i {
+            color: var(--accent);
+        }
+
+        .status-description {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .process-tracker {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 2.5rem 0;
+        }
+
+        .process-tracker::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary) 33%, #e2e8f0 33%, #e2e8f0 100%);
+            z-index: 1;
+            border-radius: 3px;
+        }
+
+        .process-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 30%;
+        }
+
+        .step-indicator {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .step-label.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(24, 90, 118, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(24, 90, 118, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+
+        .contact-support {
+            margin-top: 2.5rem;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .contact-support a {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .contact-support a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 768px) {
+            .validation-card {
+                max-width: 100%;
+            }
+
+            .card-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .card-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .process-tracker {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .process-tracker::before {
+                display: none;
+            }
+
+            .process-step {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                text-align: left;
+            }
+
+            .step-indicator {
+                margin: 0;
+                flex-shrink: 0;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .alert {
+    background-color: #e0f3ff;
+    border-left: 5px solid #007bff;
+    padding: 10px 15px;
+    color: #004085;
+    border-radius: 5px;
+}
+
+    </style>
+</head>
+<body>
+
+    
+    <div class="validation-card">
+        <div class="card-header">
+            <div class="validation-icon">
+                <i class="fas fa-user-clock"></i>
+            </div>
+            <h1>Validation du Compte</h1>
+            
+        </div>
+
+        <div class="card-body">
+            <div class="user-greeting">
+                <i class="fas fa-handshake"></i>
+                <span>Bienvenue, {{ user.first_name|default:user.username }} !</span>
+            </div>
+
+            <p class="status-description">
+                Votre inscription a été reçue avec succès et est en cours de vérification par notre équipe.
+                Ce processus garantit la qualité et la sécurité de notre plateforme d'apprentissage.
+            </p>
+
+            <div class="process-tracker">
+                <div class="process-step">
+                    <div class="step-indicator active">1</div>
+                    <div class="step-label active">Enregistrement</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-indicator">2</div>
+                    <div class="step-label">Vérification</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-indicator">3</div>
+                    <div class="step-label">Activation</div>
+                </div>
+            </div>
+
+            <p class="status-description">
+                Vous recevrez une notification par email dès que votre compte sera activé, généralement dans un délai de 24 heures.
+                Merci pour votre patience et votre confiance en JOSNET Ltd.
+            </p>
+
+            <div class="action-buttons">
+                <a href="{% url 'accueil' %}" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i> Vérifier l'état
+                </a>
+                <a href="{% url 'creation_compte' %}" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                </a>
+            </div>
+
+            <div class="contact-support">
+                Besoin d'aide ? Contactez notre support à <a href="mailto:support@josnet.com">support@josnet.com</a>
+                ou par téléphone au <a href="tel:+221331234567">+257 79 46 36 31</a>
+            </div>
+        </div>
+    </div>
+        {% if message_statut %}
+    <div class="alert alert-info" style="margin-top: 15px;">
+        {{ message_statut }}
+    </div>
+{% endif %}
+</body>
+</html>

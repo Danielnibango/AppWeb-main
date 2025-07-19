@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOSNET Admin - {% block title %}{% endblock %}</title>
+    
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        :root {
+            --primary: #0d3d5b;
+            --primary-light: rgba(12, 53, 68, 0.1);
+            --primary-lighter: rgba(12, 53, 68, 0.05);
+            --dark: #05305b;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fb;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 30px;
+            margin-left: 280px;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        /* Cards Design */
+        .dashboard-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            background: var(--white);
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+            border-left: 4px solid var(--primary);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(12, 53, 68, 0.15);
+        }
+
+        .card-icon-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-title {
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .card-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* Badges */
+        .badge-admin {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        /* Text Colors */
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated-card {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include "navbar.html" %}
+    
+    <div class="main-content">
+        <br><br><br><br>
+        
+        {% block content %}
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-grid">
+            <!-- Approved Trainers Card -->
+            <div class="dashboard-card p-4 position-relative animated-card" style="animation-delay: 0.1s;">
+                <a href="{% url 'liste_comptes_approuves_appr' %}" class="card-link"></a>
+                <div class="d-flex flex-column">
+                    <div class="card-icon-container">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3 class="stat-number">Stagiaires Approuvés</h3>
+                    <p class="stat-title">Gestion des comptes validés</p>
+                    <div class="mt-auto pt-3">
+                        <span class="text-primary"><i class="fas fa-arrow-right me-2"></i>Voir la liste</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Approval Card -->
+            <div class="dashboard-card p-4 position-relative animated-card" style="animation-delay: 0.2s;">
+                <a href="{% url 'liste_comptes_en_attente_appr' %}" class="card-link"></a>
+                <div class="d-flex flex-column">
+                    <div class="card-icon-container">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <h3 class="stat-number">Comptes en attente</h3>
+                    <p class="stat-title">Demandes d'approbation</p>
+                    <div class="mt-auto pt-3">
+                        <span class="text-primary"><i class="fas fa-arrow-right me-2"></i>Vérifier maintenant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Animation trigger
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.animated-card');
+            
+            cards.forEach((card, index) => {
+                // Apply staggered animation
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

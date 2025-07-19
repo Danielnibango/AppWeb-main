@@ -1,0 +1,83 @@
+{% extends 'index_apprenant.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-4">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fas fa-check-circle fa-3x me-3"></i>
+                        <h2 class="mb-0">Paiement Confirmé</h2>
+                    </div>
+                </div>
+                
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <img src="{% static 'images/success.png' %}" alt="Succès" class="img-fluid" style="max-height: 150px;">
+                    </div>
+                    
+                    <h4 class="mb-4">Merci pour votre paiement !</h4>
+                    
+                    <div class="confirmation-details mx-auto" style="max-width: 500px;">
+                        <div class="detail-item d-flex justify-content-between py-2 border-bottom">
+                            <span class="fw-bold">Référence:</span>
+                            <span>{{ paiement.reference_paiement }}</span>
+                        </div>
+                        <div class="detail-item d-flex justify-content-between py-2 border-bottom">
+                            <span class="fw-bold">Cours:</span>
+                            <span>{{ paiement.cours.titre }}</span>
+                        </div>
+                        <div class="detail-item d-flex justify-content-between py-2 border-bottom">
+                            <span class="fw-bold">Montant:</span>
+                            <span>{{ paiement.prix }} Fbu</span>
+                        </div>
+                        <div class="detail-item d-flex justify-content-between py-2">
+                            <span class="fw-bold">Date:</span>
+                            <span>{{ paiement.date_paiement|date:"d/m/Y H:i" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-success mt-5">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Vous recevrez un email de confirmation avec les détails d'accès.
+                    </div>
+                    
+                    <div class="d-grid gap-3 d-md-flex justify-content-md-center mt-5">
+                        <a href="{% url 'liste_cours_apprenant' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-book-open me-2"></i>Accéder au cours
+                        </a>
+                        <a href="{% url 'dashapprenant' %}" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fas fa-home me-2"></i>Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .confirmation-details {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+    }
+    .btn-primary {
+        background-color: #3f6ad8;
+        border-color: #3f6ad8;
+        transition: all 0.3s;
+    }
+    .btn-primary:hover {
+        background-color: #3457b2;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(63, 106, 216, 0.3);
+    }
+</style>
+{% endblock %}
