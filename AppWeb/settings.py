@@ -159,6 +159,8 @@ CSRF_TRUSTED_ORIGINS = [
 
 CSRF_COOKIE_SECURE = False  # 🔹 Met à False en local (sinon il exige HTTPS)
 
+SESSION_COOKIE_SECURE = False  
+
 # Configuration des médias
 import os
 
