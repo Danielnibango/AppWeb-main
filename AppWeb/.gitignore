@@ -1,16 +1,21 @@
-@"
-# Django
+# Bases de données
 *.sqlite3
+db.sqlite3
+
+# Python
 *.pyc
 __pycache__/
-db.sqlite3
+
+# Migrations Django (optionnel si tu veux ne pas les versionner)
 migrations/
 
-# Environnement
+# Environnement virtuel
 venv/
 .env
 
-# IDE
+# IDEs et éditeurs
 .vscode/
 .idea/
-"@ > .gitignore
+
+# Fichiers statiques générés
+/staticfiles/
