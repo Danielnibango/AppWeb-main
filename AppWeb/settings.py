@@ -154,6 +154,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',  # 🔹 Ajoute ton domaine local
     'http://localhost:8000',   # 🔹 Si tu utilises "localhost"
+'https://appweb-main-2.onrender.com',
 ]
 
 CSRF_COOKIE_SECURE = False  # 🔹 Met à False en local (sinon il exige HTTPS)
