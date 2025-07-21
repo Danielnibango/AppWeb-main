@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+{% load static %}
+<br><br><br>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tableaux Professionnels{% endblock %}</title>
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        :root {
+            --primary-color: #185a76;
+            --primary-light: rgba(24, 90, 118, 0.1);
+            --primary-hover: #134b63;
+            --text-dark: #2c3e50;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Structure principale */
+        .main-container {
+            margin-left: 280px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        /* Tableaux */
+        .professional-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.95rem;
+        }
+
+        .professional-table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .professional-table tbody tr {
+            transition: all 0.2s;
+        }
+
+        .professional-table tbody tr:hover {
+            background-color: var(--primary-light);
+        }
+
+        .professional-table tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Boutons */
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border: none;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-action {
+            padding: 5px 10px;
+            margin: 0 3px;
+            font-size: 0.8rem;
+        }
+
+        /* Conteneur tableau */
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* En-tête tableau */
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-container {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        /* Boutons actions */
+.btn-action {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.btn-edit {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.btn-delete {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.btn-view {
+    background-color: rgba(23, 162, 184, 0.1);
+    color: #17a2b8;
+    border: 1px solid rgba(23, 162, 184, 0.3);
+}
+
+/* Couleurs */
+.bg-primary-light {
+    background-color: rgba(24, 90, 118, 0.1);
+}
+.text-primary {
+    color: #185a76 !important;
+}
+
+
+    </style>
+</head>
+<body>
+    {% include "navbar.html" %}
+    
+    <div class="main-container">
+         
+        {% block content %}
+        <!-- Exemple de tableau par défaut -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>{% block table_title %}Exemple de Tableau{% endblock %}</h3>
+                <a href="#" class="btn btn-primary-custom">
+                    <i class="fas fa-plus me-2"></i>Ajouter
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="professional-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Exemple</td>
+                            <td>exemple@email.com</td>
+                            <td>
+                                <button class="btn btn-action btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-action btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Vérification du chargement
+        console.log("Template index chargé");
+        
+        // Fonctionnalité de recherche
+        $(document).ready(function(){
+            $('[data-search]').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('.professional-table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+        // Tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="table-container">
+    <!-- En-tête avec bouton d'ajout -->
+    <div class="table-header text-center">  <!-- Ajout de text-center -->
+        <div class="header-content">  <!-- Nouveau div wrapper -->
+            <h3 class="table-title">
+                <i class="fas fa-book me-2"></i>Gestion cours
+            </h3>
+            <p class="table-subtitle text-muted mb-3">Liste complète des cours disponibles</p>
+        </div>
+        <a href="{% url 'ajouter_cours' %}" class="btn btn-add-formateur">  <!-- Nouvelle classe -->
+            <i class="fas fa-plus-circle me-2"></i>Nouveau cours
+        </a>
+    </div>
+
+    <!-- Barre de contrôle -->
+    <div class="table-controls mb-4">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" placeholder="Rechercher un cours..." data-search-table>
+        </div>
+        <div class="d-flex gap-2">
+            <!-- Bouton Export avec dropdown -->
+            <div class="dropdown">
+                
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                    <li>
+                        <a class="dropdown-item export-link" href="#" data-format="xlsx">
+                            <i class="fas fa-file-excel text-success me-2"></i>Excel
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item export-link" href="#" data-format="csv">
+                            <i class="fas fa-file-csv text-primary me-2"></i>CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item export-link" href="#" data-format="pdf">
+                            <i class="fas fa-file-pdf text-danger me-2"></i>PDF
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau principal -->
+    <div class="table-responsive">
+        <table class="professional-table">
+            <thead>
+                <tr>
+                    <th width="100">ID</th>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Encadreur</th>
+                    <th>Module</th>
+                    <th>Prix</th>
+                    <th>Dates</th>
+                    <th>Statut</th>
+                    <th width="150">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cour in cours %}
+                <tr data-status="{{ cour.get_status }}">
+                    <td>CRS-{{ cour.id|stringformat:"04d" }}</td>
+                    <td>{{ cour.titre }}</td>
+                    <td>{{ cour.description|truncatechars:50 }}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm me-2">
+                                <span class="avatar-text bg-primary-light text-primary">
+                                    {{ cour.formateur.user.username|first|upper }}
+                                </span>
+                            </div>
+                            {{ cour.formateur.user.username }}
+                        </div>
+                    </td>
+                    <td>{{ cour.module.nom }}</td>
+                    <td>{{ cour.price }} Fbu</td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <small><strong>Début:</strong> {{ cour.date_debut|date:"d/m/Y" }}</small>
+                            <small><strong>Fin:</strong> {{ cour.date_fin|date:"d/m/Y" }}</small>
+                        </div>
+                    </td>
+                    <td>
+                       
+                        <span class="badge bg-warning rounded-pill text-dark">
+                            <i class="fas fa-spinner me-1"></i> En cours
+                        </span>
+                        
+                       
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <!-- Bouton Modifier -->
+                            <a href="{% url 'modifier_cours' cour.pk %}" 
+                               class="btn btn-action btn-sm btn-edit"
+                               data-bs-toggle="tooltip" 
+                               title="Modifier">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            
+                            <!-- Bouton Supprimer -->
+                            <form method="POST" action="{% url 'supprimer_cours' cour.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="btn btn-action btn-sm btn-delete"
+                                        data-bs-toggle="tooltip" 
+                                        title="Supprimer"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">
+                        <div class="empty-state">
+                            <img src="{% static 'images/empty.svg' %}" alt="Aucune donnée" width="150">
+                            <h5>Aucun cours programmé</h5>
+                            <p class="text-muted">Commencez par ajouter un nouveau cours</p>
+                            <a href="{% url 'ajouter_cours' %}" class="btn btn-primary-custom mt-3">
+                                <i class="fas fa-plus me-2"></i>Ajouter un cours
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="Premier">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Dernier">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    /* Styles spécifiques pour ce template */
+    .avatar-sm {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+    
+    .avatar-text {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    
+    .empty-state img {
+        opacity: 0.7;
+        margin-bottom: 1rem;
+    }
+    
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+    
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .search-box input {
+        padding-left: 40px;
+    }
+    
+    .table-subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .bg-primary-light {
+        background-color: rgba(24, 90, 118, 0.1);
+    }
+    
+    .btn-primary-custom {
+        background-color: #185a76;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary-custom:hover {
+        background-color: #134b63;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(24, 90, 118, 0.2);
+    }
+    
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 6px;
+    }
+    
+    .btn-edit {
+        background-color: #185a76;
+        color: white;
+    }
+    
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-view {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .professional-table td {
+        vertical-align: middle;
+    }
+
+
+    /* add */
+
+
+    /* Styles spécifiques pour ce template */
+    .avatar-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    .avatar-text {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    
+    .empty-state img {
+        opacity: 0.7;
+        margin-bottom: 1rem;
+    }
+    
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+    
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .search-box input {
+        padding-left: 40px;
+    }
+    
+    .table-subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .bg-primary-light {
+        background-color: rgba(24, 90, 118, 0.1);
+    }
+    
+    .btn-primary-custom {
+        background-color: #185a76;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary-custom:hover {
+        background-color: #134b63;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(24, 90, 118, 0.2);
+    }
+    
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 6px;
+    }
+    
+    .btn-edit {
+        background-color: #185a76;
+        color: white;
+    }
+    
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-view {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .professional-table td {
+        vertical-align: middle;
+    }
+
+    /* add */
+
+
+    /* Styles réutilisables */
+    .table-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .header-content {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .table-title {
+        color: #185a76;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-add-formateur {
+        background-color: #185a76;
+        color: white !important;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .btn-add-formateur:hover {
+        background-color: #134b63;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(24, 90, 118, 0.2);
+    }
+    
+    /* Styles spécifiques pour ce template */
+    .avatar-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    .avatar-text {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    
+    .empty-state img {
+        opacity: 0.7;
+        margin-bottom: 1rem;
+    }
+    
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+    
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .search-box input {
+        padding-left: 40px;
+    }
+    
+    .table-subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .bg-primary-light {
+        background-color: rgba(24, 90, 118, 0.1);
+    }
+    
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 6px;
+    }
+    
+    .btn-edit {
+        background-color: #003f5b;
+        color: white;
+    }
+    
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-view {
+        background-color: #6c757d;
+        color: white;
+    }
+
+
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialisation des tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Fonctionnalité de recherche
+        const searchInput = document.querySelector('[data-search-table]');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const value = this.value.toLowerCase();
+                document.querySelectorAll('.professional-table tbody tr').forEach(function(row) {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(value) ? '' : 'none';
+                });
+            });
+        }
+        
+        // Filtrage par statut
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function() {
+                const value = this.value;
+                document.querySelectorAll('.professional-table tbody tr').forEach(function(row) {
+                    if (value === "") {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = row.dataset.status === value ? '' : 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+
+{% endblock %}

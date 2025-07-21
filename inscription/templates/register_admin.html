@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<h2>Créer un compte Administrateur</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Créer Admin</button>
+</form>
+
+{% endblock %}
+ 
+
+

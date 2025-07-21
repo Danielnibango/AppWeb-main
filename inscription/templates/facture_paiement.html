@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Facture JOSNET - {{ paiement.reference_paiement }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+            @top-center {
+                content: "JOSNET NETWORK AND SERVICES";
+                color: #01314c;
+                font-size: 12pt;
+            }
+            @bottom-center {
+                content: "Page " counter(page) " sur " counter(pages);
+                color: #667;
+                font-size: 10pt;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #01314c;
+        }
+        .header h1 {
+            color: #01314c;
+            margin-bottom: 5px;
+            font-size: 24pt;
+        }
+        .header p {
+            color: #666;
+            font-size: 14pt;
+            margin-top: 0;
+        }
+        .info-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-left: 4px solid #01314c;
+            border-radius: 0 4px 4px 0;
+        }
+        .info-section h2 {
+            color: #01314c;
+            margin-top: 0;
+            font-size: 16pt;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            page-break-inside: avoid;
+        }
+        th {
+            background-color: #01314c;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e6ed;
+        }
+        .total-row td {
+            background-color: #f0f7ff;
+            font-weight: bold;
+            border-bottom: none;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e6ed;
+            font-size: 0.85em;
+            color: #666;
+        }
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 80px;
+        }
+        .signature-box {
+            width: 45%;
+            text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #01314c;
+            width: 70%;
+            margin: 40px auto 10px;
+        }
+        .qr-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            background: white;
+            padding: 10px;
+            border: 1px solid #e0e6ed;
+        }
+        .status-paid {
+            color: #28a745;
+            font-weight: bold;
+            background: #e6ffed;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .watermark {
+            position: fixed;
+            bottom: 10%;
+            right: 10%;
+            opacity: 0.1;
+            font-size: 80pt;
+            color: #01314c;
+            transform: rotate(-30deg);
+            pointer-events: none;
+            z-index: -1;
+        }
+        @media print {
+            body {
+                padding: 0;
+                background: none;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Watermark -->
+    <div class="watermark">JOSNET</div>
+
+    <div class="header">
+        <h1>JOSNET NETWORK AND SERVICES</h1>
+        <p>Facture de Paiement #{{ paiement.reference_paiement }}</p>
+    </div>
+
+    <div class="info-section">
+
+         <h2>Informations Client</h2>
+    <p><strong>Nom complet:</strong> {{ apprenant.get_full_name|default:apprenant.username }}</p>
+    <p><strong>Email:</strong> {{ apprenant.email }}</p>
+
+        <h2> Details pour la Formation</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <p><strong>Module:</strong> {{ paiement.cours.module }}</p>
+                <p><strong>Cours:</strong> {{ paiement.cours.titre }}</p>
+            </div>
+            <div>
+                <p><strong>Encadreur:</strong> {{ paiement.cours.formateur|default:"-" }}</p>
+                <p><strong>Durée:</strong>  2Mois</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>Détails du Paiement</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Montant (Fbu)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Frais de formation pour "{{ paiement.cours.titre }}"</td>
+                    <td>{{ paiement.montant|floatformat:"0" }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td>TOTAL À PAYER</td>
+                    <td><strong>{{ paiement.montant|floatformat:"0" }}250.000 Fbu</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px;">
+            <p><strong>Mode de paiement:</strong> {{ paiement.mode_paiement }}</p>
+            <p><strong>Référence:</strong> {{ paiement.reference_paiement }}</p>
+            <p><strong>Date:</strong> {{ paiement.date_paiement|date:"d/m/Y H:i" }}</p>
+            <p><strong>Statut:</strong> <span class="status-paid">✓ Payé</span></p>
+        </div>
+    </div>
+
+    <div class="qr-container">
+        <h3>Validation de la facture</h3>
+        <div class="qr-code">
+            <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code de validation" width="120" height="120">
+        </div>
+        <p style="margin-top: 10px; font-size: 0.9em;">Scannez ce code pour vérifier l'authenticité de cette facture</p>
+    </div>
+
+    <div class="footer">
+        <h3>Conditions & Mentions</h3>
+        <ul style="padding-left: 20px;">
+            <li>Cette facture est valable comme justificatif de paiement.</li>
+            <li>Toute réclamation doit être formulée dans les 7 jours suivant la date de paiement.</li>
+            <li>Les frais de formation sont non remboursables sauf annulation de la part de JOSNET.</li>
+            <li>Merci pour votre confiance en JOSNET Network and Services Company Limited.</li>
+        </ul>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Pour JOSNET NETWORK AND SERVICES</p>
+            <p>Signature du responsable</p>
+        </div>
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Signature de l'apprenant</p>
+            <p>Bon pour accord</p>
+        </div>
+    </div>
+
+    <div class="no-print" style="text-align: center; margin-top: 30px; padding: 15px; background: #f0f7ff; border-radius: 4px;">
+        <button onclick="window.print()" style="background: #01314c; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+            Imprimer cette facture
+        </button>
+    </div>
+</body>
+</html>

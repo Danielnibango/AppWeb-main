@@ -1,0 +1,455 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notre Équipe | JOSNET Ltd{% endblock %}
+
+{% block content %}
+<style>
+    /* Variables couleurs */
+    :root {
+        --primary: #185a76;
+        --primary-light: rgba(24, 90, 118, 0.1);
+        --dark: #0c3544;
+        --light: #f8f9fa;
+        --white: #ffffff;
+    }
+    
+    /* Structure générale */
+    .team-hero {
+        background: linear-gradient(135deg, var(--primary), var(--dark));
+        color: var(--white);
+        padding: 6rem 0 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .team-hero::before {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: var(--white);
+        clip-path: polygon(0 60%, 100% 0, 100% 100%, 0% 100%);
+    }
+    
+    /* Cartes membres */
+    .team-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        height: 100%;
+        background: var(--white);
+    }
+    
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(24, 90, 118, 0.2);
+    }
+    
+    .team-img-container {
+        height: 280px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .team-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .team-card:hover .team-img {
+        transform: scale(1.05);
+    }
+    
+    .team-position {
+        display: inline-block;
+        background: var(--primary);
+        color: var(--white);
+        padding: 6px 18px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    
+    /* Réseaux sociaux */
+    .team-social {
+        display: flex;
+        gap: 12px;
+        margin-top: 1.5rem;
+    }
+    
+    .team-social a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+    
+    .team-social a:hover {
+        background: var(--primary);
+        color: var(--white);
+        transform: translateY(-3px);
+    }
+    
+    /* Compétences */
+    .team-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 1.5rem 0;
+    }
+    
+    .team-skill {
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    /* Sections */
+    .team-section {
+        padding: 5rem 0;
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    
+    .section-title {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--primary);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .team-hero {
+            padding: 4rem 0 3rem;
+        }
+        
+        .team-hero::before {
+            bottom: -30px;
+            height: 60px;
+        }
+        
+        .team-section {
+            padding: 3rem 0;
+        }
+        
+        .team-img-container {
+            height: 220px;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="team-hero">
+    <div class="container text-center position-relative">
+        <h1 class="display-4 fw-bold mb-3 text-white">Notre Équipe <span class="text-warning">JOSNET</span></h1>
+        <p class="lead mb-4 text-white-80">Des experts passionnés pour vous accompagner vers l'excellence</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="#direction" class="btn btn-light btn-lg px-4">
+                <i class="fas fa-users me-2"></i> Direction
+            </a>
+            <a href="#formateurs" class="btn btn-outline-light btn-lg px-4">
+                <i class="fas fa-chalkboard-teacher me-2"></i> Formateurs
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Direction -->
+<section class="team-section" id="direction">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Direction <span class="text-primary">Exécutive</span></h2>
+            <p class="lead">L'équipe qui guide notre vision stratégique et notre mission pédagogique</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Directeur Général -->
+            <div class="col-lg-4 col-md-6" style="padding:30px;">
+                <div class="team-card">
+                    <div class="team-img-container">
+                        <img src="{% static 'images/josdg.jpg' %}" class="team-img" alt="Directeur Général" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="team-position">Directeur Général</span>
+                        <h3 class="mb-2">Alain Derrick iradukunda </h3>
+                        <p class="text-muted">10 ans d'expérience dans l'éducation technologique. PhD en Informatique.</p>
+                        
+                        <div class="team-skills">
+                            <span class="team-skill">Leadership</span>
+                            <span class="team-skill">Stratégie</span>
+                            <span class="team-skill">Innovation</span>
+                        </div>
+                        
+                        <div class="team-social">
+                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coordinateur Pédagogique -->
+            <div class="col-lg-4 col-md-6" style="padding:30px;">
+                <div class="team-card">
+                    <div class="team-img-container">
+                        <img src="{% static 'images/image5.avif' %}" class="team-img" alt="Coordinateur Pédagogique" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="team-position">Coordinateur Pédagogique</span>
+                        <h3 class="mb-2">ir Christian K</h3>
+                        <p class="text-muted">Expert en ingénierie de formation avec 7 ans d'expérience.</p>
+                        
+                        <div class="team-skills">
+                            <span class="team-skill">Pédagogie</span>
+                            <span class="team-skill">Reseau</span>
+                            <span class="team-skill">Qualité</span>
+                        </div>
+                        
+                        <div class="team-social">
+                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Secrétaire Générale -->
+            <div class="col-lg-4 col-md-6" style="padding:30px;">
+                <div class="team-card">
+                    <div class="team-img-container">
+                        <img src="{% static 'images/images2.jpg' %}" class="team-img" alt="Secrétaire Générale" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="team-position">Secrétaire Générale</span>
+                        <h3 class="mb-2">Sophie Ndiaye</h3>
+                        <p class="text-muted">Gestion administrative et accueil des apprenants depuis 8 ans.</p>
+                        
+                        <div class="team-skills">
+                            <span class="team-skill">Administration</span>
+                            <span class="team-skill">Accueil</span>
+                            <span class="team-skill">Organisation</span>
+                        </div>
+                        
+                        <div class="team-social">
+                            <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% load static %}
+<!-- Test static files -->
+<div style="display:none;">
+    Static URL: {% static 'images/josdg.jpg' %}<br>
+    File exists: 
+    {% with "images/josdg.jpg" as image_path %}
+        {% static image_path as image_static %}
+        {{ image_static }} - 
+        {% if image_static|filesizeformat != "0 bytes" %}
+            OK ({{ image_static|filesizeformat }})
+        {% else %}
+            MISSING
+        {% endif %}
+    {% endwith %}
+</div>
+
+<!-- Formateurs -->
+<section class="team-section bg-light" id="formateurs">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Nos <span class="text-primary">Formateurs</span> Experts</h2>
+            <p class="lead">Des professionnels en activité partageant leur expertise terrain</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Formateur UX/UI -->
+            <div class="col-lg-3 col-md-6" style="padding:20px;">
+                <div class="team-card">
+                    <div class="team-img-container">
+                        <img src="{% static 'images/image3.jpg' %}" class="team-img" alt="Expert UX/UI" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="team-position">Design UX/UI</span>
+                        <h3 class="mb-2">Aïssatou Fall</h3>
+                        <p class="text-muted small">Ancienne designer chez Google, spécialiste en expérience utilisateur.</p>
+                        
+                        <div class="team-social mt-3">
+                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" title="Dribbble"><i class="fab fa-dribbble"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formateur Développement -->
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card" style="padding:20px;">
+                    <div class="team-img-container">
+                        <img src="{% static 'images/image4.jpg' %}" class="team-img" alt="Expert Full-Stack" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="team-position">Développement</span>
+                        <h3 class="mb-2">Jean-Luc Mbaye</h3>
+                        <p class="text-muted small">Développeur senior avec 10 ans d'expérience sur les stacks modernes.</p>
+                        
+                        <div class="team-social mt-3">
+                            <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formateur Cybersécurité -->
+            <div class="col-lg-3 col-md-6" style="padding:20px;">
+                <div class="team-card">
+                    <div class="team-img-container">
+                        <img src="{% static 'images/image6.avif' %}" class="team-img" alt="Expert Cybersécurité" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="team-position">Cybersécurité</span>
+                        <h3 class="mb-2">Alioune Ndiaye</h3>
+                        <p class="text-muted small">Pentester certifié avec une expertise en systèmes sécurisés.</p>
+                        
+                        <div class="team-social mt-3">
+                            <a href="#" title="HackerRank"><i class="fab fa-hackerrank"></i></a>
+                            <a href="#" title="Medium"><i class="fab fa-medium"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formateur Data Science -->
+            <div class="col-lg-3 col-md-6 " style="padding:20px;">
+                <div class="team-card">
+                    <div class="team-img-container">
+                        <img src="{% static 'images/image1.jpg' %}" class="team-img" alt="Expert Data Science" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="team-position">Data Science</span>
+                        <h3 class="mb-2">Fatou Bâ</h3>
+                        <p class="text-muted small">Data Scientist senior spécialisée en Machine Learning et Big Data.</p>
+                        
+                        <div class="team-social mt-3">
+                            <a href="#" title="Kaggle"><i class="fab fa-kaggle"></i></a>
+                            <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'accueil' %}" class="btn btn-primary btn-lg px-4 py-3">
+                <i class="fas fa-book-open me-2"></i>Découvrir les formations
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Valeurs -->
+<section class="team-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Notre <span class="text-primary">Philosophie</span></h2>
+            <p class="lead">Les principes fondamentaux qui nous guident</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box-lg bg-primary-light text-primary rounded-circle mb-4 mx-auto">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4 class="mb-3">Excellence Académique</h4>
+                        <p class="mb-0">Nous maintenons les plus hauts standards pédagogiques pour garantir une formation d'exception.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box-lg bg-primary-light text-primary rounded-circle mb-4 mx-auto">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h4 class="mb-3">Approche Professionnelle</h4>
+                        <p class="mb-0">Nos formations sont conçues en collaboration avec les entreprises pour répondre à leurs besoins.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box-lg bg-primary-light text-primary rounded-circle mb-4 mx-auto">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4 class="mb-3">Communauté Bienveillante</h4>
+                        <p class="mb-0">Nous cultivons un environnement inclusif et stimulant pour tous nos apprenants.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Animation des cartes au scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        const teamCards = document.querySelectorAll('.team-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        teamCards.forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    });
+</script>
+{% endblock %}

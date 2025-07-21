@@ -1,0 +1,92 @@
+{% extends 'index_apprenant.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br><br>
+<div class="container py-5" >
+    <div class="card border-success mb-5" style="margin-left: 90px;" >
+        <div class="card-header text-white" style="background-color: #003f5b;">
+            <h3 class="mb-0" style="margin-left: 40%;">
+                <i class="fas fa-check-circle me-2"></i>Paiement Confirmé
+            </h3>
+            
+        </div>
+        
+        <div class="card-body">
+            
+            <div class="alert alert-success" style="text-align: center; padding-top: 60px;">
+                <img src="{% static 'images/success.png' %}" >
+                <br> <br> <br>
+                <h4 class="alert-heading">
+                    <i class="fas fa-thumbs-up me-2"></i>Merci pour votre paiement!
+                </h4>
+                <p>Votre inscription au cours <strong>{{ cours.titre }}</strong> a été confirmée.</p>
+                <hr>
+                <p class="mb-0">Référence de paiement: <code>{{ paiement.reference_paiement }}</code></p>
+                <br><br><br>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header" style="background-color: #003f5b; color: white;">
+                            <i class="fas fa-info-circle me-2"></i>Détails du Paiement
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>Montant:</strong> {{ paiement.prix }} Fbu</li>
+                                <li><strong>Mode:</strong> {{ paiement.get_mode_paiement_display }}</li>
+                                <li><strong>Date:</strong> {{ paiement.date_paiement|date:"d/m/Y H:i" }}</li>
+                                <li><strong>Statut:</strong> 
+                                    <span class="badge bg-success">Confirmé</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header" style="background-color: #003f5b; color: white;">
+                            <i class="fas fa-book-open me-2"></i>Détails du Cours
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>Module:</strong> {{ module.nom }}</li>
+                                <li><strong>Cours:</strong> {{ cours.titre }}</li>
+                                <li><strong>Encadreur:</strong> {{ cours.formateur.user.username }}</li>
+                                <li><strong>Durée:</strong> 2 mois</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                <a href="{% url 'dashapprenant' %}" class="btn btn-outline-secondary" >
+                    <i class="fas fa-home me-2"></i>Retour au Tableau de Bord
+                </a>
+                <a href="?download=1" class="marginbtn btn-primary me-md-2" style="background-color: #003f5b; margin-left: 300px; padding: 10px;">
+                    <i class="fas fa-file-pdf me-3"></i>Télécharger la Facture
+                </a>
+              </div>
+            <br>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    .badge {
+        font-size: 0.9em;
+        padding: 5px 10px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,513 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Formations Tech Innovantes | JOSNET Ltd{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Styles spécifiques */
+   
+    
+    .hero-shape {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: white;
+        clip-path: polygon(0 70%, 100% 0, 100% 100%, 0% 100%);
+    }
+    
+    .stat-shape {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: #f8f9fa;
+        clip-path: polygon(0 0, 100% 70%, 100% 100%, 0% 100%);
+    }
+    
+    .text-gradient-primary {
+        background: linear-gradient(90deg, #185a76, #1a9cb7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .icon-box-lg {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .shadow-sm-hover {
+        transition: all 0.3s ease;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .shadow-sm-hover:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    
+    .grayscale-hover {
+        filter: grayscale(100%);
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+    
+    .grayscale-hover:hover {
+        filter: grayscale(0);
+        opacity: 1;
+    }
+    
+    .bg-primary {
+        background-color: #185a76 !important;
+    }
+    
+    .text-primary {
+        color: #185a76 !important;
+    }
+    
+    .btn-primary {
+        background-color: #185a76;
+        border-color: #185a76;
+    }
+    
+    .btn-outline-primary {
+        color: #185a76;
+        border-color: #185a76;
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #185a76;
+        color: white;
+    }
+    
+    .bg-purple {
+        background-color: #6f42c1;
+    }
+    
+    .text-purple {
+        color: #6f42c1;
+    }
+    
+    .rounded-4 {
+        border-radius: 1rem !important;
+    }
+    
+    @media (min-width: 992px) {
+        .hero-section {
+            padding: 8rem 0;
+        }
+    }
+</style>
+
+<!-- Hero Section Premium -->
+<section class="hero-section position-relative overflow-hidden" >
+    <div class="container py-5 my-lg-5" >
+        <div class="row align-items-center" >
+            <div class="col-lg-6 pe-lg-5" >
+                <div class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">Nouveaux programmes 2025</div>
+                <h1 class="display-3 fw-bold mb-4">Formez-vous aux <span class="text-gradient-primary">métiers tech</span> de demain</h1>
+                <p class="lead mb-4">Acquérez des compétences recherchées grâce à nos formations intensives conçues avec des experts du secteur. 80% de nos apprenants et stagiaires trouvent un emploi dans les 6 mois.</p>
+                <div class="d-flex flex-wrap gap-3 mb-5">
+                    <a href="#formations" class="btn btn-primary btn-lg px-4 py-3">
+                        <i class="fas fa-book-open me-2"></i>Découvrir les formations
+                    </a>
+                    <a href="#contact" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-phone-alt me-2"></i>Être rappelé
+                    </a>
+                </div>
+                <div class="d-flex flex-wrap gap-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success fs-4 me-2"></i>
+                        <span>Certifications reconnues</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success fs-4 me-2"></i>
+                        <span>Financement possible</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success fs-4 me-2"></i>
+                        <span>Projets concrets</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="hero-shape"></div>
+</section>
+
+<!-- Valeurs Premium -->
+<section class="py-5 bg-light position-relative">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center mb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">Notre différence</span>
+                <h2 class="mb-3">Pourquoi choisir <span class="text-gradient-primary">JOSNET Ltd</span> ?</h2>
+                <p class="lead">Une pédagogie informatique innovante axée sur l'employabilité immédiate</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm-hover p-4 transition-all">
+                    <div class="icon-box-lg  bg-opacity-10 text-primary mb-4 mx-auto">
+                        <i class="fas fa-certificate fs-2"></i>
+                    </div>
+                    <h4 class="text-center mb-3">Certifications reconnues</h4>
+                    <p class="text-center mb-0">Nos apprenants sont accrédités et reconnus par beaucoup d'entreprises partenaires au niveau nationnale et l'international.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm-hover p-4 transition-all">
+                    <div class="icon-box-lg  bg-opacity-10 text-primary mb-4 mx-auto">
+                        <i class="fas fa-chalkboard-teacher fs-2"></i>
+                    </div>
+                    <h4 class="text-center mb-3">Experts métiers</h4>
+                    <p class="text-center mb-0">Nos formateurs sont des professionnels en activité avec 10+ ans d'expérience qui partagent leur expertise terrain.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm-hover p-4 transition-all">
+                    <div class="icon-box-lg  bg-opacity-10 text-primary mb-4 mx-auto">
+                        <i class="fas fa-briefcase fs-2"></i>
+                    </div>
+                    <h4 class="text-center mb-3">Carrière boostée</h4>
+                    <p class="text-center mb-0">92% de nos apprenants trouvent un emploi qualifié en moins de 6 mois grâce à notre réseau et notre service carrière dédié.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm-hover p-4 transition-all">
+                    <div class="icon-box-lg  bg-opacity-10 text-primary mb-4 mx-auto">
+                        <i class="fas fa-laptop-code fs-2"></i>
+                    </div>
+                    <h4 class="text-center mb-3">Pédagogie pratique</h4>
+                    <p class="text-center mb-0">70% du temps en ateliers pratiques sur des cas réels d'entreprise pour une montée en compétences rapide.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formations phares Premium -->
+<section class="py-5 position-relative" id="formations">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center mb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">Nos programmes</span>
+                <h2 class="mb-3">Formations <span class="text-gradient-primary">phares</span></h2>
+                <p class="lead">Des parcours intensifs pour des compétences immédiatement opérationnelles</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <!-- Formation 1 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm-hover overflow-hidden transition-all" style="padding: 20px;">
+                    <div class="position-relative">
+                        <img src="{% static 'images/web.jpg' %}" class="card-img-top" alt="Programmation" style="height: 200px; object-fit: cover;">
+                        <span class="badge bg-primary position-absolute top-0 start-0 m-3">Nouveau</span>
+                        <div class="position-absolute bottom-0 end-0 m-3">
+                            <span class="badge bg-white text-dark"><i class="fas fa-clock text-primary me-1"></i> 2 mois</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-info bg-opacity-10 text-info">Développement</span>
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                    
+                                
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="text-muted ms-1">(24)</span>
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-3">Développement Full-Stack</h5>
+                        <p class="card-text mb-4">Maîtrisez l'écosystème Python/Django pour créer des applications web complètes avec architectures modernes.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Projet final avec startup partenaire</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Préparation aux certifications AWS</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Stage garanti en entreprise</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center pt-0 pb-4 px-4">
+                        <div>
+                            <span class="text-muted d-block small">À partir de</span>
+                            <span class="h4 text-primary mb-0">250.000 Fbu</span>
+                        </div>
+                        <a href="{% url 'team' %}" class="btn btn-primary stretched-link">Voir nos encadreurs  <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formation 2 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm-hover overflow-hidden transition-all" style="padding: 20px;">
+                    <div class="position-relative">
+                        <img src="{% static 'images/rs.jpg' %}" class="card-img-top" alt="Cybersécurité" style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 end-0 m-3">
+                            <span class="badge bg-white text-dark"><i class="fas fa-clock text-primary me-1"></i> 2 mois</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-danger bg-opacity-10 text-danger">Sécurité</span>
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                
+                                <span class="text-muted ms-1">(18)</span>
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-3">Expert en Cybersécurité</h5>
+                        <p class="card-text mb-4">Formation complète en sécurité offensive et défensive avec préparation à la certification sur environnements réels.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Pentests sur infrastructures réelles</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Certification CEH incluse</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Accès à notre cyber range</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center pt-0 pb-4 px-4">
+                        <div>
+                            <span class="text-muted d-block small">À partir de</span>
+                            <span class="h4 text-primary mb-0">250.000 Fbu</span>
+                        </div>
+                        <a href="{% url 'team' %}" class="btn btn-primary stretched-link">Voir nos encadreurs <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formation 3 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm-hover overflow-hidden transition-all" style="padding: 20px;">
+                    <div class="position-relative">
+                        <img src="{% static 'images/josnet.jpg' %}" class="card-img-top" alt="Design" style="height: 200px; object-fit: cover;">
+                        <span class="badge bg-success position-absolute top-0 start-0 m-3">Populaire</span>
+                        <div class="position-absolute bottom-0 end-0 m-3">
+                            <span class="badge bg-white text-dark"><i class="fas fa-clock text-primary me-1"></i> 2 mois</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-purple bg-opacity-10 text-purple">Design</span>
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="text-muted ms-1">(32)</span>
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-3">UX/UI Design Professionnel</h5>
+                        <p class="card-text mb-4">De la recherche utilisateur au prototypage avancé avec Figma et Adobe XD. Créez des interfaces qui convertissent et des expériences mémorables.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>3 projets réels pour portfolio</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Ateliers avec designers seniors</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Préparation au marché du travail</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center pt-0 pb-4 px-4">
+                        <div>
+                            <span class="text-muted d-block small">À partir de</span>
+                            <span class="h4 text-primary mb-0">250.000 Fbu</span>
+                        </div>
+                        <a href="{% url 'team' %}" class="btn btn-primary stretched-link">Voir nos encadreurs <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+<!-- Statistiques -->
+<section class="py-5 bg-primary text-white position-relative">
+    <div class="container py-5">
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold mb-3">85%</h2>
+                    <p class="mb-0">Taux d'insertion professionnelle à 2 mois</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold mb-3">14+</h2>
+                    <p class="mb-0">Entreprises partenaires qui recrutent</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold mb-3">4.2/5</h2>
+                    <p class="mb-0">Satisfaction moyenne de nos stagiaires</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold mb-3">12</h2>
+                    <p class="mb-0">Certifications professionnelles préparées</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="stat-shape"></div>
+</section>
+
+<!-- Témoignages Premium -->
+<section class="py-5 bg-light position-relative">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center mb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">Témoignages</span>
+                <h2 class="mb-3">Ils nous font <span class="text-gradient-primary">confiance</span></h2>
+                <p class="lead">Découvrez les parcours inspirants de nos anciens stagiaires</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm-hover p-4 transition-all">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="{% static 'images/nelly.jpg' %}" class="rounded-circle me-3" width="70" height="70" alt="Témoignage">
+                        <div>
+                            <h5 class="mb-1">Sarah K.</h5>
+                            <p class="text-muted mb-0">Développeuse Full-Stack @TechCorp</p>
+                        </div>
+                    </div>
+                    <p class="mb-4">"Après une reconversion professionnelle, la formation Full-Stack m'a donné toutes les compétences pour décrocher mon premier poste de développeuse. Les projets concrets et le suivi personnalisé ont fait toute la différence."</p>
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-quote-left text-primary opacity-25 me-2 fs-1"></i>
+                        <small class="text-muted">Formation Full-Stack, promotion 2022</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm-hover p-4 transition-all">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="{% static 'images/nathan.jpg' %}" class="rounded-circle me-3" width="70" height="70" alt="Témoignage">
+                        <div>
+                            <h5 class="mb-1">Marc D.</h5>
+                            <p class="text-muted mb-0">Pentester @SecureNetwork</p>
+                        </div>
+                    </div>
+                    <p class="mb-4">"Les labs pratiques sur des environnements réels ont été déterminants pour ma carrière. J'ai obtenu ma certification CEH et un poste dans une SSII avant même la fin de la formation. L'accompagnement pour le CV et les entretiens a été précieux."</p>
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-quote-left text-primary opacity-25 me-2 fs-1"></i>
+                        <small class="text-muted">Formation Cybersécurité, promotion 2023</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm-hover p-4 transition-all">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="{% static 'images/dyna.jpg' %}" class="rounded-circle me-3" width="70" height="70" alt="Témoignage">
+                        <div>
+                            <h5 class="mb-1">Aïcha B.</h5>
+                            <p class="text-muted mb-0">UX Designer @StartUpLab</p>
+                        </div>
+                    </div>
+                    <p class="mb-4">"Le portfolio professionnel que j'ai construit pendant la formation m'a ouvert les portes de plusieurs startups. Les méthodologies Agile enseignées sont directement applicables en entreprise. Je recommande vivement ce programme!"</p>
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-quote-left text-primary opacity-25 me-2 fs-1"></i>
+                        <small class="text-muted">Formation UX/UI, promotion 2023</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Premium -->
+<section class="py-5 position-relative" id="contact">
+    <div class="container py-5">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <h2 class="mb-4">Prêt à lancer votre <span class="text-gradient-primary">carrière tech à Josnet</span> ?</h2>
+                <p class="lead mb-4">Nos conseillers pédagogiques sont à votre disposition pour vous orienter vers la formation la plus adaptée à vos objectifs professionnels.</p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="tel:+257 79 46 36 31" class="btn btn-primary btn-lg px-4 py-3">
+                        <i class="fas fa-phone-alt me-2"></i>+257 79 46 36 31
+                    </a>
+                    <a href="mailto:formations@josnet.com" class="btn btn-outline-primary btn-lg px-4 py-3">
+                        <i class="fas fa-envelope me-2"></i> Nous écrire
+                    </a>
+                </div>
+                <div class="bg-light p-4 rounded-3">
+                    <h5 class="mb-3"><i class="fas fa-gift text-primary me-2"></i> Offre spéciale</h5>
+                    <p class="mb-0">Inscrivez-vous avant le 30 septembre et bénéficiez de <strong>10% de réduction</strong> sur toutes nos formations + un accompagnement carrière offert.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-white p-4 p-lg-5 rounded-3 shadow-sm">
+                    <h4 class="mb-4">Demandez un renseignement</h4>
+                    <form>
+                        <div class="mb-3">
+                            <input type="text" class="form-control py-3" placeholder="Votre nom complet">
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control py-3" placeholder="Votre email">
+                        </div>
+                        <div class="mb-3">
+                            <input type="tel" class="form-control py-3" placeholder="Votre téléphone">
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-select py-3">
+                                <option selected>Formation intéressée</option>
+                                <option>Développement Full-Stack</option>
+                                <option>Expert en Cybersécurité</option>
+                                <option>UX/UI Design Professionnel</option>
+                               
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-3">Envoyer la demande <i class="fas fa-arrow-right ms-2"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    </div>
+</section>
+
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'index_apprenant.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br><br>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header warning text-white text-center py-4" style="background-color: #185a76;">
+                    <h2><i class="fas fa-exclamation-triangle me-2"></i>Inscription existante</h2>
+                </div>
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <img src="{% static 'images/warning.png' %}" alt="Avertissement" class="img-fluid" style="max-height: 150px;">
+                    </div>
+                    
+                    <h4 class="text-warning mb-4">Vous êtes déjà inscrit à ce cours !</h4>
+                    
+                    <p class="lead">Il semble que vous ayez déjà une inscription active pour :</p>
+                    <p class="h5 mb-4"><strong>{{ cours.titre }}</strong></p>
+                    
+                    <div class="d-flex justify-content-center gap-3 mt-5">
+                        <a href="{% url 'inscription_cours' %}" class="btn btn-primary btn-lg px-4" style="background-color: #185a76;">
+                            <i class="fas fa-book-open me-2"></i>Retour
+                        </a>
+                        <a href="{% url 'liste_cours_apprenant' %}" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fas fa-list me-2"></i>Autres cours
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    .btn-primary {
+        background-color: #3f6ad8;
+        border-color: #3f6ad8;
+        transition: all 0.3s;
+    }
+    .btn-primary:hover {
+        background-color: #3457b2;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(63, 106, 216, 0.3);
+    }
+</style>
+{% endblock %}

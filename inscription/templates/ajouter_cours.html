@@ -1,0 +1,298 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block page_title %}page pour ajouter le cours{% endblock %}
+{% block content %}
+<div class="form-container">
+    <!-- En-tête du formulaire -->
+    <div class="form-header">
+        <div>
+            <h2 class="form-title">
+                <i class="fas fa-book-open me-2"></i>Ajouter un Cours
+            </h2>
+            <p class="form-subtitle">Remplissez les informations pour créer un nouveau cours</p>
+        </div>
+        <a href="{% url 'liste_cours' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+        </a>
+    </div>
+
+    <!-- Carte du formulaire -->
+    <div class="card form-card">
+        <div class="card-body">
+            <form method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- Messages d'erreur -->
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Veuillez corriger les erreurs ci-dessous
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    <!-- Colonne de gauche -->
+                    <div class="col-md-6">
+                        <!-- Titre -->
+                        <div class="mb-4">
+                            <label for="id_titre" class="form-label">Titre du cours *</label>
+                            <input type="text" 
+                                   class="form-control {% if form.titre.errors %}is-invalid{% endif %}" 
+                                   id="id_titre" 
+                                   name="titre" 
+                                   value="{{ form.titre.value|default:'' }}"
+                                   required>
+                            {% if form.titre.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.titre.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Formateur -->
+                        <div class="mb-4">
+                            <label for="id_formateur" class="form-label">Encadreur *</label>
+                            <select class="form-select {% if form.formateur.errors %}is-invalid{% endif %}" 
+                                    id="id_formateur" 
+                                    name="formateur"
+                                    required>
+                                <option value="">Sélectionnez un Encadreur...</option>
+                                {% for formateur in formateurs %}
+                                <option value="{{ formateur.id }}" 
+                                        {% if formateur.id == form.formateur.value|add:0 %}selected{% endif %}>
+                                    {{ formateur.user.username }} 
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.formateur.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.formateur.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="id_date_debut" class="form-label">Date de début *</label>
+                                <input type="date" 
+                                       class="form-control {% if form.date_debut.errors %}is-invalid{% endif %}" 
+                                       id="id_date_debut" 
+                                       name="date_debut" 
+                                       value="{{ form.date_debut.value|default:'' }}"
+                                       required>
+                                {% if form.date_debut.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.date_debut.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="id_date_fin" class="form-label">Date de fin *</label>
+                                <input type="date" 
+                                       class="form-control {% if form.date_fin.errors %}is-invalid{% endif %}" 
+                                       id="id_date_fin" 
+                                       name="date_fin" 
+                                       value="{{ form.date_fin.value|default:'' }}"
+                                       required>
+                                {% if form.date_fin.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.date_fin.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Colonne de droite -->
+                    <div class="col-md-6">
+                        <!-- Module -->
+                        <div class="mb-4">
+                            <label for="id_module" class="form-label">Module *</label>
+                            <select class="form-select {% if form.module.errors %}is-invalid{% endif %}" 
+                                    id="id_module" 
+                                    name="module"
+                                    required>
+                                <option value="">Sélectionnez un module...</option>
+                                {% for module in modules %}
+                                <option value="{{ module.id }}" 
+                                        {% if module.id == form.module.value|add:0 %}selected{% endif %}>
+                                    {{ module.nom }} ({{ module.get_type_formation_display }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.module.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.module.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Prix -->
+                        <div class="mb-4">
+                            <label for="id_prix" class="form-label">Prix (Fbu) *</label>
+                            <div class="input-group">
+                                <input type="number" 
+                                       class="form-control {% if form.price.errors %}is-invalid{% endif %}" 
+                                       id="id_prix" 
+                                       name="price" 
+                                       value="{{ form.price.value|default:'' }}"
+                                       min="0"
+                                       step="1000"
+                                       required>
+                                <span class="input-group-text">Fbu</span>
+                                {% if form.price.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.price.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label">Description</label>
+                            <textarea class="form-control {% if form.description.errors %}is-invalid{% endif %}" 
+                                      id="id_description" 
+                                      name="description" 
+                                      rows="4">{{ form.description.value|default:'' }}</textarea>
+                            {% if form.description.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.description.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons de soumission -->
+                <div class="form-footer">
+                    <button type="reset" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo me-2"></i>Réinitialiser
+                    </button>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="fas fa-save me-2"></i>Enregistrer le cours
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styles spécifiques au formulaire */
+    .form-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 2rem;
+    }
+    
+    .form-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-subtitle {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+    
+    .form-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 6px;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(24, 90, 118, 0.15);
+    }
+    
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f0f0f0;
+        margin-top: 1rem;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+    }
+    
+    /* Validation */
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    
+    .invalid-feedback {
+        font-size: 0.85rem;
+    }
+
+    
+</style>
+
+<script>
+    // Validation côté client
+    document.addEventListener('DOMContentLoaded', function() {
+        // Désactiver la soumission du formulaire si des champs sont invalides
+        (function() {
+            'use strict'
+            
+            const forms = document.querySelectorAll('.needs-validation')
+            
+            Array.from(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+        
+        // Validation des dates
+        const dateDebut = document.getElementById('id_date_debut')
+        const dateFin = document.getElementById('id_date_fin')
+        
+        if (dateDebut && dateFin) {
+            dateDebut.addEventListener('change', function() {
+                if (dateFin.value && this.value > dateFin.value) {
+                    dateFin.value = ''
+                }
+            })
+            
+            dateFin.addEventListener('change', function() {
+                if (this.value < dateDebut.value) {
+                    alert('La date de fin doit être postérieure à la date de début')
+                    this.value = ''
+                }
+            })
+        }
+    })
+</script>
+{% endblock %}
