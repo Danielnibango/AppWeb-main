@@ -37,17 +37,13 @@ from django.http import Http404
 
 # Create your views here.
 
-@login_required(login_url='login')
 def accueil(request):
     return render(request, 'accueil.html')
-
-@login_required(login_url='login')
 def apropos(request):
     return render(request, 'apropos.html')
-@login_required(login_url='login')
+
 def team(request):
     return render(request, 'team.html')
-@login_required(login_url='login')
 def contact(request):
     return render(request, 'contact.html')
 
