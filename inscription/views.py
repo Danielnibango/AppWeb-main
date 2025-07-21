@@ -51,7 +51,6 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
-@login_required(login_url='login')
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name')
