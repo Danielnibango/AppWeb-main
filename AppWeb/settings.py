@@ -157,8 +157,8 @@ CSRF_TRUSTED_ORIGINS = [
 'https://appweb-main-2.onrender.com',
 ]
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
 # Configuration des médias
 import os
